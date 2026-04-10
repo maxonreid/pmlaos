@@ -72,7 +72,8 @@ export async function POST(req: NextRequest) {
       areaSqm: data.areaSqm,
       bedrooms: data.bedrooms,
       bathrooms: data.bathrooms,
-      parkingSpaces: data.parkingSpaces,
+      parkingAvailable: data.parkingAvailable,
+      swimmingPool: data.swimmingPool,
       lat: data.lat,
       lng: data.lng,
       photos: data.photos.length > 0

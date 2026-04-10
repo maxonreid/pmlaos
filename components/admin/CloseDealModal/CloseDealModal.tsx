@@ -7,6 +7,7 @@ type ListingOption = {
   id: string
   title: string
   price: number
+  transaction: 'sale' | 'rent'
 }
 
 type Props = {
@@ -20,6 +21,7 @@ type Props = {
 
 type FormValues = {
   listingId: string
+  transactionType: 'sale' | 'rent'
   dealValue: string
   commission: string
   closedAt: string
@@ -32,6 +34,7 @@ function todayIso() {
 
 const EMPTY_FORM: FormValues = {
   listingId: '',
+  transactionType: 'sale',
   dealValue: '',
   commission: '',
   closedAt: todayIso(),
@@ -67,8 +70,9 @@ export default function CloseDealModal({
   const handleListingChange = (listingId: string) => {
     updateField('listingId', listingId)
     const match = listings.find((l) => l.id === listingId)
-    if (match && match.price > 0) {
-      updateField('dealValue', String(match.price))
+    if (match) {
+      if (match.price > 0) updateField('dealValue', String(match.price))
+      updateField('transactionType', match.transaction)
     }
   }
 
@@ -98,6 +102,7 @@ export default function CloseDealModal({
         body: JSON.stringify({
           clientId,
           listingId: values.listingId,
+          transactionType: values.transactionType,
           dealValue: Number(values.dealValue),
           commission: Number(values.commission),
           closedAt: values.closedAt,

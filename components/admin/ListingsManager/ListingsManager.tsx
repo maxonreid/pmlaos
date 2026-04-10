@@ -1,7 +1,6 @@
 'use client'
 
 import Image from 'next/image'
-import Link from 'next/link'
 import { FormEvent, useCallback, useEffect, useState, useTransition } from 'react'
 import LocationMap from '@/components/shared/LocationMap/LocationMap'
 import styles from './ListingsManager.module.css'
@@ -22,6 +21,7 @@ type ListingSummary = {
   bedrooms?: number | null
   bathrooms?: number | null
   parkingSpaces?: number | null
+  swimmingPool?: boolean | null
   lat?: string | number | null
   lng?: string | number | null
   photos?: Array<{ url: string; order?: number }>
@@ -33,6 +33,7 @@ type ListingDetail = ListingSummary & {
   bedrooms: number | null
   bathrooms: number | null
   parkingSpaces: number | null
+  swimmingPool: boolean | null
   lat: string | number | null
   lng: string | number | null
   photos: Array<{ url: string; order: number }>
@@ -52,6 +53,7 @@ type FormValues = {
   bedrooms: string
   bathrooms: string
   parkingAvailable: boolean
+  swimmingPool: boolean
   lat: string | null
   lng: string | null
   photos: string[]
@@ -76,6 +78,7 @@ const EMPTY_FORM: FormValues = {
   bedrooms: '',
   bathrooms: '',
   parkingAvailable: false,
+  swimmingPool: false,
   lat: null,
   lng: null,
   photos: [],
@@ -100,6 +103,7 @@ function toFormValues(listing: ListingDetail): FormValues {
     bedrooms: toInputValue(listing.bedrooms),
     bathrooms: toInputValue(listing.bathrooms),
     parkingAvailable: Boolean(listing.parkingSpaces),
+    swimmingPool: Boolean(listing.swimmingPool),
     lat: listing.lat === null || listing.lat === undefined ? null : String(listing.lat),
     lng: listing.lng === null || listing.lng === undefined ? null : String(listing.lng),
     photos: listing.photos?.map((photo) => photo.url) ?? [],
@@ -189,7 +193,7 @@ function generateSlug(title: string) {
 
 export default function ListingsManager({ canDelete, initialListings = [], useLocalData = false }: Props) {
   const [listings, setListings] = useState<ListingSummary[]>(() => sortListings(initialListings))
-  const [mode, setMode] = useState<'list' | 'create' | 'edit'>('list')
+  const [mode, setMode] = useState<'list' | 'create' | 'edit' | 'view'>('list')
   const [formValues, setFormValues] = useState<FormValues>(EMPTY_FORM)
   const [editingId, setEditingId] = useState<string | null>(null)
   const [listingPendingDelete, setListingPendingDelete] = useState<ListingSummary | null>(null)
@@ -270,6 +274,64 @@ export default function ListingsManager({ canDelete, initialListings = [], useLo
     setMode('create')
   }
 
+  const openView = (id: string) => {
+    if (useLocalData) {
+      const localListing = initialListings.find((listing) => listing.id === id)
+        ?? listings.find((listing) => listing.id === id)
+      if (!localListing) {
+        setPageError('Unable to load listing details.')
+        return
+      }
+
+      setPageError('')
+      setFieldErrors({})
+      setFormValues(toFormValues({
+        ...localListing,
+        descriptionEn: localListing.descriptionEn ?? '',
+        areaSqm: localListing.areaSqm ?? null,
+        bedrooms: localListing.bedrooms ?? null,
+        bathrooms: localListing.bathrooms ?? null,
+        parkingSpaces: localListing.parkingSpaces ?? null,
+        swimmingPool: localListing.swimmingPool ?? null,
+        lat: localListing.lat ?? null,
+        lng: localListing.lng ?? null,
+        photos: (localListing.photos ?? []).map((photo, order) => ({
+          url: photo.url,
+          order: photo.order ?? order,
+        })),
+      }))
+      setEditingId(localListing.id)
+      setMode('view')
+      return
+    }
+
+    setLoadingForm(true)
+    setPageError('')
+    setFieldErrors({})
+
+    startTransition(() => {
+      void (async () => {
+        try {
+          const response = await fetch(`/api/listings/${id}`, { cache: 'no-store' })
+          if (!response.ok) {
+            const error = await parseApiError(response)
+            setPageError(error.error ?? 'Unable to load listing details.')
+            return
+          }
+
+          const data = (await response.json()) as ListingDetail
+          setFormValues(toFormValues(data))
+          setEditingId(data.id)
+          setMode('view')
+        } catch {
+          setPageError('Unable to load listing details.')
+        } finally {
+          setLoadingForm(false)
+        }
+      })()
+    })
+  }
+
   const openEdit = (id: string) => {
     if (useLocalData) {
       const localListing = initialListings.find((listing) => listing.id === id)
@@ -288,6 +350,7 @@ export default function ListingsManager({ canDelete, initialListings = [], useLo
         bedrooms: localListing.bedrooms ?? null,
         bathrooms: localListing.bathrooms ?? null,
         parkingSpaces: localListing.parkingSpaces ?? null,
+        swimmingPool: localListing.swimmingPool ?? null,
         lat: localListing.lat ?? null,
         lng: localListing.lng ?? null,
         photos: (localListing.photos ?? []).map((photo, order) => ({
@@ -354,6 +417,7 @@ export default function ListingsManager({ canDelete, initialListings = [], useLo
       bedrooms: formValues.bedrooms.trim(),
       bathrooms: formValues.bathrooms.trim(),
       parkingSpaces: formValues.parkingAvailable ? 1 : '',
+      swimmingPool: formValues.swimmingPool,
       lat: formValues.lat,
       lng: formValues.lng,
       photos: formValues.photos,
@@ -378,6 +442,7 @@ export default function ListingsManager({ canDelete, initialListings = [], useLo
         bedrooms: payload.bedrooms ? Number(payload.bedrooms) : null,
         bathrooms: payload.bathrooms ? Number(payload.bathrooms) : null,
         parkingSpaces: payload.parkingSpaces ? 1 : null,
+        swimmingPool: payload.swimmingPool ? true : null,
         lat: payload.lat ? Number(payload.lat) : null,
         lng: payload.lng ? Number(payload.lng) : null,
         photos: payload.photos.map((url, order) => ({ url, order })),
@@ -720,16 +785,23 @@ export default function ListingsManager({ canDelete, initialListings = [], useLo
                     </div>
 
                     <div className={styles.actionRow}>
-                      <Link
-                        href={`/en/listings/${listing.slug}`}
-                        className={`${styles.actionButton} ${styles.viewButton}`}
-                        target="_blank"
-                        rel="noreferrer"
-                        aria-label={`View ${listing.titleEn}`}
-                      >
-                        <span className={styles.actionIcon}><EyeIcon /></span>
-                        <span>Preview</span>
-                      </Link>
+                      {listing.slug ? (
+                        <button
+                          type="button"
+                          className={`${styles.actionButton} ${styles.viewButton}`}
+                          onClick={() => openView(listing.id)}
+                          disabled={loadingForm || isPending}
+                          aria-label={`View ${listing.titleEn}`}
+                        >
+                          <span className={styles.actionIcon}><EyeIcon /></span>
+                          <span>View</span>
+                        </button>
+                      ) : (
+                        <span className={`${styles.actionButton} ${styles.viewButton} ${styles.disabledButton}`} aria-label={`Cannot view ${listing.titleEn}`}>
+                          <span className={styles.actionIcon}><EyeIcon /></span>
+                          <span>View</span>
+                        </span>
+                      )}
                       <button
                         type="button"
                         className={`${styles.actionButton} ${styles.secondaryButton}`}
@@ -758,6 +830,118 @@ export default function ListingsManager({ canDelete, initialListings = [], useLo
               ))}
             </div>
           )}
+        </section>
+      ) : mode === 'view' ? (
+        <section className={styles.formPanel}>
+          <div className={styles.formHeader}>
+            <button type="button" className={styles.backButton} onClick={closeForm}>
+              Back
+            </button>
+            <div>
+              <h2 className={styles.formTitle}>{formValues.titleEn || 'View listing'}</h2>
+              <p className={styles.formText}>This listing is read-only.</p>
+            </div>
+          </div>
+
+          <div className={styles.form}>
+            <div className={styles.field}>
+              <span className={styles.label}>Title</span>
+              <div className={styles.readonlyValue}>{formValues.titleEn || '—'}</div>
+            </div>
+
+            <div className={styles.field}>
+              <span className={styles.label}>Description</span>
+              <div className={styles.readonlyValue}>{formValues.descriptionEn || '—'}</div>
+            </div>
+
+            <div className={styles.field}>
+              <span className={styles.label}>Location</span>
+              <div className={styles.readonlyValue}>{formValues.locationEn || '—'}</div>
+            </div>
+
+            <div className={styles.grid}>
+              <div className={styles.field}>
+                <span className={styles.label}>Category</span>
+                <div className={styles.readonlyValue}>{formValues.category || '—'}</div>
+              </div>
+              <div className={styles.field}>
+                <span className={styles.label}>Transaction</span>
+                <div className={styles.readonlyValue}>{formValues.transaction || '—'}</div>
+              </div>
+            </div>
+
+            <div className={styles.grid}>
+              <div className={styles.field}>
+                <span className={styles.label}>Status</span>
+                <div className={styles.readonlyValue}>{formValues.status || '—'}</div>
+              </div>
+              <div className={styles.field}>
+                <span className={styles.label}>Featured</span>
+                <div className={styles.readonlyValue}>{formValues.featured ? 'Yes' : 'No'}</div>
+              </div>
+            </div>
+
+            {formValues.photos.length > 0 ? (
+              <div className={styles.field}>
+                <span className={styles.label}>Photos</span>
+                <div className={styles.photoGrid}>
+                  {formValues.photos.map((photo, index) => (
+                    <div key={`${index}-${photo.slice(0, 24)}`} className={styles.photoCard}>
+                      <Image src={photo} alt={`Listing photo ${index + 1}`} className={styles.photoPreview} width={320} height={320} unoptimized />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ) : null}
+
+            <div className={styles.grid}>
+              <div className={styles.field}>
+                <span className={styles.label}>Price (USD)</span>
+                <div className={styles.readonlyValue}>{formValues.price ? `${formValues.price} ${formValues.priceUnit === 'per_month' ? '/ month' : ''}` : '—'}</div>
+              </div>
+            </div>
+
+            <div className={styles.grid}>
+              <div className={styles.field}>
+                <span className={styles.label}>Area (sqm)</span>
+                <div className={styles.readonlyValue}>{formValues.areaSqm || '—'}</div>
+              </div>
+              <div className={styles.field}>
+                <span className={styles.label}>Bedrooms</span>
+                <div className={styles.readonlyValue}>{formValues.bedrooms || '—'}</div>
+              </div>
+            </div>
+
+            <div className={styles.grid}>
+              <div className={styles.field}>
+                <span className={styles.label}>Bathrooms</span>
+                <div className={styles.readonlyValue}>{formValues.bathrooms || '—'}</div>
+              </div>
+              <div className={styles.field}>
+                <span className={styles.label}>Amenities</span>
+                <div className={styles.readonlyValue}>
+                  {formValues.parkingAvailable ? 'Parking' : ''}
+                  {formValues.parkingAvailable && formValues.swimmingPool ? ', ' : ''}
+                  {formValues.swimmingPool ? 'Swimming pool' : ''}
+                  {!formValues.parkingAvailable && !formValues.swimmingPool ? '—' : ''}
+                </div>
+              </div>
+            </div>
+
+            {formValues.lat && formValues.lng ? (
+              <div className={styles.field}>
+                <span className={styles.label}>Map location</span>
+                <span className={styles.helpText}>Saved: {formValues.lat}, {formValues.lng}</span>
+                <LocationMap lat={Number(formValues.lat)} lng={Number(formValues.lng)} label={formValues.titleEn || 'Property location'} note="Saved location" height="compact" />
+              </div>
+            ) : null}
+
+            <div className={styles.stickyActions}>
+              <button type="button" className={styles.primaryButton} onClick={() => openEdit(editingId!)}>
+                Edit this listing
+              </button>
+            </div>
+          </div>
         </section>
       ) : (
         <section className={styles.formPanel}>
@@ -847,7 +1031,7 @@ export default function ListingsManager({ canDelete, initialListings = [], useLo
                     checked={formValues.featured}
                     onChange={(event) => updateField('featured', event.target.checked)}
                   />
-                  <span>Show as featured</span>
+                  <span>Show as featured property</span>
                 </label>
               </div>
             </div>
@@ -934,14 +1118,22 @@ export default function ListingsManager({ canDelete, initialListings = [], useLo
               </label>
 
               <div className={`${styles.field} ${styles.checkboxField}`}>
-                <span className={styles.label}>Parking</span>
+                <span className={styles.label}>Amenities</span>
                 <label className={styles.checkbox}>
                   <input
                     type="checkbox"
                     checked={formValues.parkingAvailable}
                     onChange={(event) => updateField('parkingAvailable', event.target.checked)}
                   />
-                  <span>Parking available</span>
+                  <span>Parking</span>
+                </label>
+                <label className={styles.checkbox}>
+                  <input
+                    type="checkbox"
+                    checked={formValues.swimmingPool}
+                    onChange={(event) => updateField('swimmingPool', event.target.checked)}
+                  />
+                  <span>Swimming pool</span>
                 </label>
               </div>
             </div>

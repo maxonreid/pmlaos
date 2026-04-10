@@ -1,6 +1,7 @@
 export type DealMutationInput = {
   clientId: string
   listingId: string
+  transactionType: 'sale' | 'rent'
   dealValue: number
   commission: number
   closedAt: string
@@ -62,6 +63,13 @@ export function validateDealPayload(body: unknown): ValidationResult {
 
   const clientId = getRequiredString(body, 'clientId', 'Client', fieldErrors)
   const listingId = getRequiredString(body, 'listingId', 'Property', fieldErrors)
+
+  const transactionTypeRaw = body.transactionType
+  const transactionType: 'sale' | 'rent' =
+    transactionTypeRaw === 'sale' || transactionTypeRaw === 'rent'
+      ? transactionTypeRaw
+      : 'sale'
+
   const dealValue = getRequiredPositiveNumber(body, 'dealValue', 'Deal value', fieldErrors)
   const commission = getRequiredPositiveNumber(body, 'commission', 'Commission', fieldErrors)
 
@@ -82,7 +90,7 @@ export function validateDealPayload(body: unknown): ValidationResult {
     return { ok: false, error: 'Please correct the highlighted fields.', fieldErrors }
   }
 
-  return { ok: true, data: { clientId, listingId, dealValue, commission, closedAt, notes } }
+  return { ok: true, data: { clientId, listingId, transactionType, dealValue, commission, closedAt, notes } }
 }
 
 export function jsonError(error: string, status: number, fieldErrors?: Record<string, string>) {

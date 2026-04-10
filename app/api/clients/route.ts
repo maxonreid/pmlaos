@@ -7,15 +7,6 @@ export async function GET() {
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   const clients = await prisma.client.findMany({
-    select: {
-      id: true,
-      name: true,
-      phone: true,
-      email: true,
-      interestType: true,
-      status: true,
-      createdAt: true,
-    },
     orderBy: { createdAt: 'desc' },
   })
 
@@ -31,8 +22,12 @@ export async function POST(req: NextRequest) {
   const client = await prisma.client.create({
     data: {
       name: body.name,
-      phone: body.phone,
+      whatsapp: body.whatsapp,
       email: body.email ?? null,
+      nationality: body.nationality ?? null,
+      gender: body.gender ?? null,
+      speakLaoThai: body.speakLaoThai ?? false,
+      speakEnglish: body.speakEnglish ?? false,
       language: body.language ?? 'en',
       interestType: body.interestType ?? 'any',
       budgetMin: body.budgetMin ?? null,
@@ -40,6 +35,7 @@ export async function POST(req: NextRequest) {
       notes: body.notes ?? null,
       status: body.status ?? 'new',
       source: body.source ?? 'direct',
+      assignedTo: body.assignedTo ?? null,
     },
   })
 

@@ -16,7 +16,8 @@ export type ListingMutationInput = {
   areaSqm: string | null
   bedrooms: number | null
   bathrooms: number | null
-  parkingSpaces: number | null
+  parkingAvailable: boolean
+  swimmingPool: boolean
   lat: string | null
   lng: string | null
   photos: string[]
@@ -177,7 +178,8 @@ export function validateListingPayload(body: unknown): ValidationResult {
     areaSqm: getOptionalDecimal(body, 'areaSqm', 'Area', fieldErrors),
     bedrooms: getOptionalInteger(body, 'bedrooms', 'Bedrooms', fieldErrors),
     bathrooms: getOptionalInteger(body, 'bathrooms', 'Bathrooms', fieldErrors),
-    parkingSpaces: getOptionalInteger(body, 'parkingSpaces', 'Parking spaces', fieldErrors),
+    parkingAvailable: getBooleanValue(body, 'parkingAvailable'),
+    swimmingPool: getBooleanValue(body, 'swimmingPool'),
     lat: getOptionalDecimal(body, 'lat', 'Latitude', fieldErrors),
     lng: getOptionalDecimal(body, 'lng', 'Longitude', fieldErrors),
     photos: getPhotos(body, fieldErrors),

@@ -1,15 +1,9 @@
-import { setRequestLocale } from 'next-intl/server'
+import { getLocale, getTranslations } from 'next-intl/server'
 import Link from 'next/link'
-import { getTranslations } from 'next-intl/server'
 import styles from './not-found.module.css'
 
-export default async function NotFoundPage({
-  params,
-}: {
-  params: Promise<{ locale: string }>
-}) {
-  const { locale } = await params
-  setRequestLocale(locale)
+export default async function NotFoundPage() {
+  const locale = await getLocale()
   const t = await getTranslations('notFound')
 
   return (

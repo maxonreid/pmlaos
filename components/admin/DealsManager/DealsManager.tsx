@@ -19,6 +19,7 @@ type ListingOption = {
   id: string
   title: string
   price: number
+  transaction: 'sale' | 'rent'
 }
 
 type ClientOption = {
@@ -35,17 +36,19 @@ type Props = {
 type FormValues = {
   clientId: string
   listingId: string
+  transactionType: 'sale' | 'rent'
   dealValue: string
   commission: string
   closedAt: string
   notes: string
 }
 
-type ModalMode = 'create' | 'edit' | 'view'
+type ModalMode = 'list' | 'create' | 'edit' | 'view'
 
 const EMPTY_FORM: FormValues = {
   clientId: '',
   listingId: '',
+  transactionType: 'sale',
   dealValue: '',
   commission: '',
   closedAt: new Date().toISOString().slice(0, 10),
@@ -79,6 +82,7 @@ function toFormValues(deal: Deal, clients: ClientOption[], listings: ListingOpti
   return {
     clientId: clientMatch?.id ?? '',
     listingId: listingMatch?.id ?? '',
+    transactionType: deal.transactionType,
     dealValue: String(deal.dealValue),
     commission: String(deal.commission),
     closedAt: deal.closedAt,
@@ -117,7 +121,7 @@ function TrashIcon() {
 
 export default function DealsManager({ initialDeals = [], listings, clients }: Props) {
   const [deals, setDeals] = useState<Deal[]>(() => sortDeals(initialDeals))
-  const [modalMode, setModalMode] = useState<ModalMode>('create')
+  const [modalMode, setModalMode] = useState<ModalMode>('list')
   const [editingDeal, setEditingDeal] = useState<Deal | null>(null)
   const [formValues, setFormValues] = useState<FormValues>(EMPTY_FORM)
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({})
@@ -138,8 +142,9 @@ export default function DealsManager({ initialDeals = [], listings, clients }: P
   const handleListingChange = (listingId: string) => {
     updateField('listingId', listingId)
     const match = listings.find((l) => l.id === listingId)
-    if (match && match.price > 0) {
-      updateField('dealValue', String(match.price))
+    if (match) {
+      if (match.price > 0) updateField('dealValue', String(match.price))
+      updateField('transactionType', match.transaction)
     }
   }
 
@@ -168,7 +173,7 @@ export default function DealsManager({ initialDeals = [], listings, clients }: P
   }
 
   const closeModal = () => {
-    setModalMode('create')
+    setModalMode('list')
     resetForm()
   }
 
@@ -303,7 +308,7 @@ export default function DealsManager({ initialDeals = [], listings, clients }: P
         </div>
       )}
 
-      {modalMode !== 'create' && (
+      {modalMode !== 'list' && (
         <div className={styles.modalOverlay} role="dialog" aria-modal="true" aria-labelledby="deal-modal-title">
           <div className={styles.modalCard}>
             <div className={styles.modalHeader}>

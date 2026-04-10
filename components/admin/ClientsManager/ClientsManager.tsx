@@ -57,12 +57,6 @@ const listingOptions = adminListingsSeed.map((listing) => ({
   price: listing.price,
 }))
 
-const statusEmoji: Record<ClientRecord['status'], string> = {
-  new: '🆕',
-  active: '✅',
-  closed: '🔒',
-  lost: '❌',
-}
 
 const EMPTY_FORM: FormValues = {
   name: '',
@@ -128,22 +122,6 @@ function formatBudget(client: ClientRecord) {
 function formatInterest(value: ClientRecord['interestType']) {
   const label = value.replace(/_/g, ' ')
   return label.charAt(0).toUpperCase() + label.slice(1)
-}
-
-function formatGender(value: Gender) {
-  const labels: Record<Gender, string> = {
-    male: 'Male',
-    female: 'Female',
-    other: 'Other',
-  }
-
-  return labels[value]
-}
-
-function getPropertyTitles(ids: string[]) {
-  return ids
-    .map((id) => listingOptions.find((listing) => listing.id === id)?.title)
-    .filter(Boolean)
 }
 
 function EyeIcon() {
@@ -387,48 +365,16 @@ export default function ClientsManager({ initialClients = [], userRole }: Props)
                 <article key={client.id} className={styles.recordCard}>
                   <div className={styles.recordTop}>
                     <div className={styles.recordBadgeRow}>
-                      <span className={`${styles.pill} ${styles[client.status]}`}>{`${statusEmoji[client.status]} ${client.status}`}</span>
+                      <span className={`${styles.pill} ${styles[client.status]}`}>{client.status}</span>
                       <span className={styles.secondaryPill}>{formatInterest(client.interestType)}</span>
-                      <span className={styles.nationalityPill}>{client.nationality}</span>
                     </div>
                     <h2 className={styles.recordTitle}>{client.name}</h2>
-                    <p className={styles.whatsappValue}>WhatsApp: {client.whatsapp}</p>
-                    {client.email ? <p className={styles.whatsappValue}>Email: {client.email}</p> : null}
+                    <p className={styles.whatsappValue}>{client.whatsapp}</p>
                   </div>
 
-                  <div className={styles.metaGrid}>
-                    <div className={styles.metaBlock}>
-                      <span className={styles.metaLabel}>Budget</span>
-                      <p className={styles.metaValue}>{formatBudget(client)}</p>
-                    </div>
-                    <div className={styles.metaBlock}>
-                      <span className={styles.metaLabel}>Gender</span>
-                      <p className={styles.metaValue}>{formatGender(client.gender)}</p>
-                    </div>
-                    <div className={styles.metaBlock}>
-                      <span className={styles.metaLabel}>Source</span>
-                      <p className={styles.metaValue}>{client.source}</p>
-                    </div>
-                    <div className={styles.metaBlock}>
-                      <span className={styles.metaLabel}>Assigned to</span>
-                      <p className={styles.metaValue}>
-                        {client.assignedToId
-                          ? (activeUsers.find((u) => u.id === client.assignedToId)?.name ?? 'Unknown')
-                          : '—'}
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className={styles.interestedRow}>
-                    <span className={styles.metaLabel}>Interested properties</span>
-                    <div className={styles.propertyChips}>
-                      {getPropertyTitles(client.interestedPropertyIds).map((title) => (
-                        <span key={title} className={styles.propertyChip}>{title}</span>
-                      ))}
-                    </div>
-                  </div>
-
-                  {client.notes ? <p className={styles.recordNotes}>{client.notes}</p> : null}
+                  {client.budgetMin != null || client.budgetMax != null ? (
+                    <p className={styles.budgetLine}>{formatBudget(client)}</p>
+                  ) : null}
 
                   <div className={styles.actionRow}>
                     <button

@@ -53,83 +53,43 @@ export default async function HomePage({ params }: HomePageProps) {
 
   return (
     <>
-      <section className={styles.hero}>
+      <section
+        className={styles.hero}
+        style={{ backgroundImage: `linear-gradient(to bottom, rgba(8, 17, 41, 0.55) 0%, rgba(8, 17, 41, 0.72) 100%), url(${promo.image})` }}
+      >
         <div className={styles.heroBackdrop} />
-        <div className={styles.heroGlow} />
-        <div className={`${styles.container} ${styles.heroShell}`}>
-          <div className={styles.heroCopy}>
-            <p className={styles.heroKicker}>{t('home.kicker')}</p>
-            <h1 className={styles.heroTitle}>{t('home.title')}</h1>
-            <p className={styles.heroSubtitle}>{t('home.subtitle')}</p>
+        <div className={`${styles.container} ${styles.heroCentered}`}>
+          <p className={styles.heroKicker}>{t('home.kicker')}</p>
+          <h1 className={styles.heroTitle}>{t('home.title')}</h1>
+          <p className={styles.heroSubtitle}>{t('home.subtitle')}</p>
 
-            <div className={styles.heroActions}>
-              <Link href={`/${locale}/listings`} className={styles.heroCtaPrimary}>
-                {t('home.cta')}
-              </Link>
-              <Link href={`/${locale}/contact`} className={styles.heroCtaSecondary}>
-                {t('home.ctaContact')}
-              </Link>
-            </div>
-
-            <div className={styles.heroStats}>
-              <div className={styles.heroStat}>
-                <span className={styles.heroStatNum}>{t('home.stat1Num')}</span>
-                <span className={styles.heroStatLabel}>{t('home.stat1Label')}</span>
-              </div>
-              <div className={styles.heroStat}>
-                <span className={styles.heroStatNum}>{t('home.stat2Num')}</span>
-                <span className={styles.heroStatLabel}>{t('home.stat2Label')}</span>
-              </div>
-              <div className={styles.heroStat}>
-                <span className={styles.heroStatNum}>{t('home.stat3Num')}</span>
-                <span className={styles.heroStatLabel}>{t('home.stat3Label')}</span>
-              </div>
-            </div>
+          <div className={styles.heroActions}>
+            <Link href={`/${locale}/listings`} className={styles.heroCtaPrimary}>
+              {t('home.cta')}
+            </Link>
+            <Link href={`/${locale}/contact`} className={styles.heroCtaSecondary}>
+              {t('home.ctaContact')}
+            </Link>
           </div>
 
-          <div className={styles.heroVisual}>
-            <div
-              className={styles.heroFrame}
-              style={{ backgroundImage: `linear-gradient(180deg, rgba(8, 17, 41, 0.08), rgba(8, 17, 41, 0.7)), url(${promo.image})` }}
-            >
-              <div className={styles.heroFrameTop}>
-                <span className={styles.heroFrameBadge}>{t('home.heroSpotlight')}</span>
-                <span className={styles.heroFrameLocation}>{t('home.heroLocation')}</span>
-              </div>
-
-              {heroListing && (
-                <div className={styles.heroPropertyCard}>
-                  <p className={styles.heroPropertyType}>
-                    {getListingTypeLabel(t, heroListing)}
-                  </p>
-                  <h2 className={styles.heroPropertyTitle}>{heroListing.titleEn}</h2>
-                  <p className={styles.heroPropertyMeta}>{heroListing.locationEn}</p>
-                  <Link
-                    href={`/${locale}/listings/${heroListing.slug}`}
-                    className={styles.heroPropertyLink}
-                  >
-                    {t('home.heroExplore')}
-                  </Link>
-                </div>
-              )}
+          <div className={styles.heroStats}>
+            <div className={styles.heroStat}>
+              <span className={styles.heroStatNum}>{t('home.stat1Num')}</span>
+              <span className={styles.heroStatLabel}>{t('home.stat1Label')}</span>
+            </div>
+            <div className={styles.heroStat}>
+              <span className={styles.heroStatNum}>{t('home.stat2Num')}</span>
+              <span className={styles.heroStatLabel}>{t('home.stat2Label')}</span>
+            </div>
+            <div className={styles.heroStat}>
+              <span className={styles.heroStatNum}>{t('home.stat3Num')}</span>
+              <span className={styles.heroStatLabel}>{t('home.stat3Label')}</span>
             </div>
           </div>
         </div>
       </section>
 
-      <section className={styles.storyBand}>
-        <div className={`${styles.container} ${styles.storyGrid}`}>
-          <div className={styles.storyIntro}>
-            <p className={styles.storyEyebrow}>{t('home.storyEyebrow')}</p>
-            <h2 className={styles.storyTitle}>{t('home.storyTitle')}</h2>
-            <p className={styles.storyText}>{t('home.storyBody')}</p>
-          </div>
-          <div className={styles.storyPanel}>
-            <span className={styles.storyPanelLabel}>{t('home.storyPanelLabel')}</span>
-            <p className={styles.storyPanelQuote}>{t('home.storyPanelQuote')}</p>
-          </div>
-        </div>
-      </section>
+
 
       <section className={styles.section}>
         <div className={styles.container}>

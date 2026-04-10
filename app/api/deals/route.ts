@@ -33,12 +33,13 @@ export async function POST(req: NextRequest) {
     return jsonError(validation.error, 400, validation.fieldErrors)
   }
 
-  const { clientId, listingId, dealValue, commission, closedAt, notes } = validation.data
+  const { clientId, listingId, transactionType, dealValue, commission, closedAt, notes } = validation.data
 
   const deal = await prisma.deal.create({
     data: {
       clientId,
       listingId,
+      transactionType,
       dealValue,
       commission,
       currency: 'USD',
