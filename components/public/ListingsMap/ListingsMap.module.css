@@ -106,3 +106,10 @@
     min-height: 400px;
   }
 }
+
+@media (max-width: 480px) {
+  .mapFrame {
+    height: 280px;
+    min-height: 280px;
+  }
+}

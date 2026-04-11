@@ -23,7 +23,7 @@ const demoListings = [
     areaSqm: '320',
     bedrooms: 4,
     bathrooms: 3,
-    parkingSpaces: 1,
+    parkingAvailable: true,
     lat: '17.9651000',
     lng: '102.6074000',
     photos: [
@@ -45,7 +45,7 @@ const demoListings = [
     areaSqm: '86',
     bedrooms: 2,
     bathrooms: 1,
-    parkingSpaces: 1,
+    parkingAvailable: true,
     lat: '17.9515000',
     lng: '102.6321000',
     photos: [
@@ -67,7 +67,7 @@ const demoListings = [
     areaSqm: '950',
     bedrooms: null,
     bathrooms: null,
-    parkingSpaces: null,
+    parkingAvailable: false,
     lat: '17.9562000',
     lng: '102.5809000',
     photos: [
@@ -112,7 +112,7 @@ async function main() {
         areaSqm: listing.areaSqm,
         bedrooms: listing.bedrooms,
         bathrooms: listing.bathrooms,
-        parkingSpaces: listing.parkingSpaces,
+        parkingAvailable: listing.parkingAvailable ?? false,
         lat: listing.lat,
         lng: listing.lng,
         photos: {
@@ -140,7 +140,7 @@ async function main() {
         areaSqm: listing.areaSqm,
         bedrooms: listing.bedrooms,
         bathrooms: listing.bathrooms,
-        parkingSpaces: listing.parkingSpaces,
+        parkingAvailable: listing.parkingAvailable ?? false,
         lat: listing.lat,
         lng: listing.lng,
         photos: {

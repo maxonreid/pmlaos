@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
 import ListingCard from '@/components/public/ListingCard/ListingCard'
-import { getFeaturedListings } from '@/lib/dummy'
+import { getFeaturedListings, type PublicListing } from '@/lib/listingsPublic'
 import styles from './page.module.css'
 
 type HomePageProps = {
@@ -15,7 +15,7 @@ type PromoContent = {
 
 function getListingTypeLabel(
   t: Awaited<ReturnType<typeof getTranslations>>,
-  listing: (ReturnType<typeof getFeaturedListings>)[number],
+  listing: PublicListing,
 ) {
   const categoryKey = `listing.category${listing.category.charAt(0).toUpperCase() + listing.category.slice(1)}` as
     | 'listing.categoryLand'
@@ -47,7 +47,7 @@ export default async function HomePage({ params }: HomePageProps) {
   setRequestLocale(locale)
 
   const t = await getTranslations()
-  const featured = getFeaturedListings()
+  const featured = await getFeaturedListings()
   const heroListing = featured[0]
   const promo = getPromoContent(locale)
 

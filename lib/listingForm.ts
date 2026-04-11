@@ -2,12 +2,14 @@ const CATEGORY_VALUES = ['house', 'apartment', 'land'] as const
 const TRANSACTION_VALUES = ['sale', 'rent'] as const
 const STATUS_VALUES = ['available', 'sold', 'rented', 'hidden'] as const
 const PRICE_UNIT_VALUES = ['total', 'per_month'] as const
+const AREA_VALUES = ['sikhottabong', 'phonxay', 'chanthabouly', 'xaysetha'] as const
 
 export type ListingMutationInput = {
   category: (typeof CATEGORY_VALUES)[number]
   transaction: (typeof TRANSACTION_VALUES)[number]
   status: (typeof STATUS_VALUES)[number]
   featured: boolean
+  area: (typeof AREA_VALUES)[number] | null
   titleEn: string
   descriptionEn: string
   locationEn: string
@@ -165,11 +167,17 @@ export function validateListingPayload(body: unknown): ValidationResult {
   }
 
   const fieldErrors: Record<string, string> = {}
+  const rawArea = body.area
+  const area = typeof rawArea === 'string' && (AREA_VALUES as readonly string[]).includes(rawArea)
+    ? (rawArea as (typeof AREA_VALUES)[number])
+    : null
+
   const data: ListingMutationInput = {
     category: getEnumValue(body, 'category', CATEGORY_VALUES, 'Category', fieldErrors),
     transaction: getEnumValue(body, 'transaction', TRANSACTION_VALUES, 'Transaction', fieldErrors),
     status: getEnumValue(body, 'status', STATUS_VALUES, 'Status', fieldErrors),
     featured: getBooleanValue(body, 'featured'),
+    area,
     titleEn: getRequiredString(body, 'titleEn', 'Title', fieldErrors),
     descriptionEn: getRequiredString(body, 'descriptionEn', 'Description', fieldErrors),
     locationEn: getRequiredString(body, 'locationEn', 'Location', fieldErrors),

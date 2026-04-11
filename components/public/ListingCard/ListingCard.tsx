@@ -1,10 +1,10 @@
 import Image from 'next/image'
 import Link from 'next/link'
-import { Listing, formatPrice } from '@/lib/dummy'
+import { type PublicListing, formatPrice } from '@/lib/listingsPublic'
 import styles from './ListingCard.module.css'
 
 interface Props {
-  listing: Listing
+  listing: PublicListing
   locale: string
   typeLabel: string
   areaLabel: string

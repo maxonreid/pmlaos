@@ -1,6 +1,6 @@
 'use client'
 
-import maplibregl from 'maplibre-gl'
+import maplibregl, { type StyleSpecification } from 'maplibre-gl'
 import Map, { Marker, NavigationControl } from 'react-map-gl/maplibre'
 import styles from './LocationMap.module.css'
 
@@ -13,7 +13,7 @@ type Props = {
   height?: 'compact' | 'default'
 }
 
-const BASEMAP_STYLE = {
+const BASEMAP_STYLE: StyleSpecification = {
   version: 8,
   sources: {
     osm: {

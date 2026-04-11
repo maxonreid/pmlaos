@@ -5,7 +5,6 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
 }
 
 enum Role {
@@ -66,6 +65,13 @@ enum InquiryStatus {
   closed
 }
 
+enum ListingArea {
+  sikhottabong
+  phonxay
+  chanthabouly
+  xaysetha
+}
+
 enum ClientLanguage {
   en
   lo
@@ -92,6 +98,7 @@ model Listing {
   transaction    TransactionType
   status         ListingStatus   @default(available)
   featured       Boolean         @default(false)
+  area           ListingArea?
   titleEn        String
   titleLo        String
   titleZh        String

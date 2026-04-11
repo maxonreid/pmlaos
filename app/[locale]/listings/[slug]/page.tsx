@@ -4,11 +4,12 @@ import { notFound } from 'next/navigation'
 import GalleryViewer from '@/components/public/GalleryViewer/GalleryViewer'
 import LocationMap from '@/components/shared/LocationMap/LocationMap'
 import WhatsAppButton from '@/components/public/WhatsAppButton/WhatsAppButton'
-import { listings, getListingBySlug, getPrimaryAreaSqm, formatPrice, type AmenityKey } from '@/lib/dummy'
+import { getListingBySlug, getAllPublicSlugs, formatPrice } from '@/lib/listingsPublic'
 import styles from './page.module.css'
 
-export function generateStaticParams() {
-  return listings.map((l) => ({ slug: l.slug }))
+export async function generateStaticParams() {
+  const slugs = await getAllPublicSlugs()
+  return slugs.map((slug) => ({ slug }))
 }
 
 export default async function ListingDetailPage({
@@ -20,7 +21,7 @@ export default async function ListingDetailPage({
   setRequestLocale(locale)
   const t = await getTranslations()
 
-  const listing = getListingBySlug(slug)
+  const listing = await getListingBySlug(slug)
   if (!listing) notFound()
 
   const categoryKey = `listing.category${listing.category.charAt(0).toUpperCase() + listing.category.slice(1)}` as
@@ -38,7 +39,7 @@ export default async function ListingDetailPage({
     | 'listing.statusSold'
     | 'listing.statusRented'
   const statusLabel = listing.status !== 'hidden' ? t(statusKey) : null
-  const primaryAreaSqm = getPrimaryAreaSqm(listing)
+  const primaryAreaSqm = listing.areaSqm
 
   const heroFacts = listing.category === 'land'
     ? [
@@ -49,7 +50,7 @@ export default async function ListingDetailPage({
     : [
         listing.bedrooms ? { label: t('listing.bedrooms'), value: String(listing.bedrooms) } : null,
         listing.bathrooms ? { label: t('listing.bathrooms'), value: String(listing.bathrooms) } : null,
-        listing.parkingSpaces ? { label: t('listing.parking'), value: String(listing.parkingSpaces) } : null,
+        listing.parkingAvailable ? { label: t('listing.parking'), value: t('listing.parkingYes') } : null,
         primaryAreaSqm ? { label: t('listing.area'), value: `${primaryAreaSqm} ${t('listing.sqm')}` } : null,
       ].filter((item): item is { label: string; value: string } => item !== null)
 
@@ -60,8 +61,8 @@ export default async function ListingDetailPage({
     listing.category !== 'land' && listing.bathrooms
       ? { label: t('listing.bathrooms'), value: String(listing.bathrooms) }
       : null,
-    listing.category !== 'land' && listing.parkingSpaces
-      ? { label: t('listing.parking'), value: String(listing.parkingSpaces) }
+    listing.category !== 'land' && listing.parkingAvailable
+      ? { label: t('listing.parking'), value: t('listing.parkingYes') }
       : null,
     listing.areaSqm
       ? { label: t('listing.area'), value: `${listing.areaSqm} ${t('listing.sqm')}` }
@@ -69,7 +70,7 @@ export default async function ListingDetailPage({
     { label: t('listing.location'), value: listing.locationEn },
   ].filter((item): item is { label: string; value: string } => item !== null)
 
-  const amenityLabels: Record<AmenityKey, string> = {
+  const amenityLabels: Record<string, string> = {
     pool: t('listing.amenityPool'),
     gym: t('listing.amenityGym'),
     garden: t('listing.amenityGarden'),

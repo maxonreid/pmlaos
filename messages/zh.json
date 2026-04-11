@@ -82,6 +82,7 @@
     "filterAmenityGym": "健身房",
     "filterAmenityPool": "泳池",
     "filterAmenityParking": "停车位",
+    "filterToggleLabel": "筛选",
     "applyFilters": "应用筛选",
     "clearFilters": "清除筛选",
     "noResults": "没有找到符合此筛选条件的房源。"
@@ -103,6 +104,7 @@
     "bedrooms": "卧室",
     "bathrooms": "浴室",
     "parking": "停车位",
+    "parkingYes": "有",
     "buildingArea": "建筑面积",
     "landArea": "土地面积",
     "description": "关于此房产",
@@ -153,17 +155,10 @@
   },
   "contact": {
     "title": "联系我们",
-    "intro": "有疑问或想预约看房？请联系我们，我们的团队将在一个工作日内回复。",
+    "intro": "联系我们最快的方式是 WhatsApp，我们每周 7 天随时为您服务。",
     "officeTitle": "我们的办公室",
     "officeAddress": "苏法努旺大道 12 号\n占塔布里区\n万象，老挝人民民主共和国",
-    "whatsappLabel": "WhatsApp",
-    "form": {
-      "name": "全名",
-      "phone": "电话 / WhatsApp",
-      "message": "留言",
-      "submit": "发送消息",
-      "success": "感谢您！我们将尽快与您联系。"
-    }
+    "whatsappLabel": "WhatsApp"
   },
   "footer": {
     "tagline": "老挝万象房产列表",

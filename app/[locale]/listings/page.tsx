@@ -2,8 +2,9 @@ import { getTranslations, setRequestLocale } from 'next-intl/server'
 import ListingsMapPanel from '@/components/public/ListingsMap/ListingsMapPanel'
 import ListingCard from '@/components/public/ListingCard/ListingCard'
 import RangeSlider from '@/components/public/RangeSlider/RangeSlider'
-import { LISTING_AREAS, getListings, listings as allListings, ListingArea, PropertyCategory, TransactionType } from '@/lib/dummy'
+import { LISTING_AREAS, getPublicListings, type ListingArea, type PropertyCategory, type TransactionType } from '@/lib/listingsPublic'
 import { offsetCoordinates } from '@/lib/mapOffset'
+import FiltersPanel from '@/components/public/FiltersPanel/FiltersPanel'
 import styles from './page.module.css'
 
 type AdvancedFilters = {
@@ -107,11 +108,19 @@ export default async function ListingsPage({
 
   const adv: AdvancedFilters = { minPrice, maxPrice, minArea, maxArea, minBedrooms, amenities }
   const hasAdvancedFilters = minPrice != null || maxPrice != null || minArea != null || maxArea != null || minBedrooms != null || amenities?.length
+  const activeFilterCount = [
+    minPrice != null || maxPrice != null,
+    minArea != null || maxArea != null,
+    minBedrooms != null,
+    (amenities?.length ?? 0) > 0,
+  ].filter(Boolean).length
 
   // Compute slider bounds from listings matching the active transaction (if set)
-  const boundsPool = allListings.filter(
-    (l) => l.status === 'available' && (transaction == null || l.transaction === transaction),
-  )
+  const [boundsPool, filtered] = await Promise.all([
+    getPublicListings({ transaction }),
+    getPublicListings({ category, transaction, area, query, minPrice, maxPrice, minArea, maxArea, minBedrooms, amenities }),
+  ])
+
   const boundsPoolPrices = boundsPool.map((l) => l.price)
   const priceBoundMin = boundsPoolPrices.length ? Math.floor(Math.min(...boundsPoolPrices) / 100) * 100 : 0
   const priceBoundMax = boundsPoolPrices.length ? Math.ceil(Math.max(...boundsPoolPrices) / 1000) * 1000 : 1_000_000
@@ -121,10 +130,9 @@ export default async function ListingsPage({
   const areaBoundMin = boundsPoolAreas.length ? Math.floor(Math.min(...boundsPoolAreas) / 10) * 10 : 0
   const areaBoundMax = boundsPoolAreas.length ? Math.ceil(Math.max(...boundsPoolAreas) / 10) * 10 : 2_000
 
-  const baseResults = getListings(category, transaction, query, undefined, minPrice, maxPrice, minArea, maxArea, minBedrooms, amenities)
-  const filtered = getListings(category, transaction, query, area, minPrice, maxPrice, minArea, maxArea, minBedrooms, amenities)
+  const baseResults = await getPublicListings({ category, transaction, query, minPrice, maxPrice, minArea, maxArea, minBedrooms, amenities })
   const selectedListing = filtered.find((listing) => listing.slug === rawSelected)
-  const isMapOpen = true
+  const isMapOpen = false
 
   // Transaction tabs clear advanced filters (price scales differ between Buy/Rent)
   const buyHref = transaction === 'sale'
@@ -183,7 +191,7 @@ export default async function ListingsPage({
       return {
         slug: listing.slug,
         title: listing.titleEn,
-        areaLabel: areaLabels[listing.area],
+        areaLabel: listing.area ? areaLabels[listing.area as ListingArea] ?? '' : '',
         href: `${buildListingsHref(locale, { transaction, category, query, area, selected: listing.slug, ...adv })}#listing-${listing.slug}`,
         active: listing.slug === selectedListing?.slug,
         lat,
@@ -285,6 +293,11 @@ export default async function ListingsPage({
             </div>
 
             {/* Advanced filters */}
+            <FiltersPanel
+              initiallyOpen={!!hasAdvancedFilters}
+              label={t('listings.filterToggleLabel')}
+              activeCount={activeFilterCount}
+            >
             <div className={styles.advancedFilters}>
               {/* Price range */}
               <div className={styles.filterGroup}>
@@ -381,6 +394,7 @@ export default async function ListingsPage({
                 ) : null}
               </div>
             </div>
+            </FiltersPanel>
           </form>
         </div>
 

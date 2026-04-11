@@ -82,6 +82,7 @@
     "filterAmenityGym": "Gym",
     "filterAmenityPool": "Pool",
     "filterAmenityParking": "Parking",
+    "filterToggleLabel": "Filters",
     "applyFilters": "Apply Filters",
     "clearFilters": "Clear filters",
     "noResults": "No listings found for this filter."
@@ -103,6 +104,7 @@
     "bedrooms": "Bedrooms",
     "bathrooms": "Bathrooms",
     "parking": "Parking",
+    "parkingYes": "Available",
     "buildingArea": "Building Area",
     "landArea": "Land Area",
     "description": "About this property",
@@ -153,17 +155,10 @@
   },
   "contact": {
     "title": "Contact Us",
-    "intro": "Have a question or want to arrange a viewing? Reach out and our team will be in touch within one business day.",
+    "intro": "The fastest way to reach us is WhatsApp. We're available 7 days a week.",
     "officeTitle": "Our Office",
     "officeAddress": "Unit 12, Souphanouvong Avenue\nChanthabouly District\nVientiane, Laos PDR",
-    "whatsappLabel": "WhatsApp",
-    "form": {
-      "name": "Full Name",
-      "phone": "Phone / WhatsApp",
-      "message": "Message",
-      "submit": "Send Message",
-      "success": "Thank you! We'll be in touch shortly."
-    }
+    "whatsappLabel": "WhatsApp"
   },
   "footer": {
     "tagline": "Property listings in Vientiane, Laos",

@@ -6,8 +6,8 @@ import { adminSystemUsers } from '@/lib/adminDummy'
 import CloseDealModal from '@/components/admin/CloseDealModal/CloseDealModal'
 import styles from './ClientsManager.module.css'
 
-type Nationality = 'Lao' | 'Thai' | 'Vietnamese' | 'Chinese' | 'International'
-type Gender = 'male' | 'female' | 'other'
+type Nationality = string
+type Gender = string
 
 type ClientRecord = {
   id: string
@@ -16,11 +16,11 @@ type ClientRecord = {
   email?: string | null
   nationality: Nationality
   gender: Gender
-  interestType: 'any' | 'house_rent' | 'apartment_rent' | 'house_sale' | 'apartment_sale' | 'land_sale'
+  interestType: string
   budgetMin?: number | null
   budgetMax?: number | null
-  status: 'new' | 'active' | 'closed' | 'lost'
-  source: 'website' | 'referral' | 'direct' | 'other'
+  status: string
+  source: string
   notes?: string | null
   interestedPropertyIds: string[]
   assignedToId?: string | null
@@ -55,6 +55,7 @@ const listingOptions = adminListingsSeed.map((listing) => ({
   id: listing.id,
   title: listing.titleEn,
   price: listing.price,
+  transaction: listing.transaction as 'sale' | 'rent',
 }))
 
 

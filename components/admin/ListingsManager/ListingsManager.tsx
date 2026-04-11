@@ -14,13 +14,14 @@ type ListingSummary = {
   transaction: string
   status: string
   featured: boolean
+  area?: string | null
   price: string | number
   priceUnit: string
   descriptionEn?: string
   areaSqm?: string | number | null
   bedrooms?: number | null
   bathrooms?: number | null
-  parkingSpaces?: number | null
+  parkingAvailable?: boolean | null
   swimmingPool?: boolean | null
   lat?: string | number | null
   lng?: string | number | null
@@ -29,10 +30,11 @@ type ListingSummary = {
 
 type ListingDetail = ListingSummary & {
   descriptionEn: string
+  area: string | null
   areaSqm: string | number | null
   bedrooms: number | null
   bathrooms: number | null
-  parkingSpaces: number | null
+  parkingAvailable: boolean | null
   swimmingPool: boolean | null
   lat: string | number | null
   lng: string | number | null
@@ -47,6 +49,7 @@ type FormValues = {
   transaction: string
   status: string
   featured: boolean
+  area: string
   price: string
   priceUnit: string
   areaSqm: string
@@ -72,6 +75,7 @@ const EMPTY_FORM: FormValues = {
   transaction: 'sale',
   status: 'available',
   featured: false,
+  area: '',
   price: '',
   priceUnit: 'total',
   areaSqm: '',
@@ -97,12 +101,13 @@ function toFormValues(listing: ListingDetail): FormValues {
     transaction: listing.transaction ?? 'sale',
     status: listing.status ?? 'available',
     featured: Boolean(listing.featured),
+    area: listing.area ?? '',
     price: toInputValue(listing.price),
     priceUnit: listing.priceUnit ?? 'total',
     areaSqm: toInputValue(listing.areaSqm),
     bedrooms: toInputValue(listing.bedrooms),
     bathrooms: toInputValue(listing.bathrooms),
-    parkingAvailable: Boolean(listing.parkingSpaces),
+    parkingAvailable: Boolean(listing.parkingAvailable),
     swimmingPool: Boolean(listing.swimmingPool),
     lat: listing.lat === null || listing.lat === undefined ? null : String(listing.lat),
     lng: listing.lng === null || listing.lng === undefined ? null : String(listing.lng),
@@ -202,6 +207,7 @@ export default function ListingsManager({ canDelete, initialListings = [], useLo
   const [transactionFilter, setTransactionFilter] = useState<'all' | 'sale' | 'rent'>('all')
   const [loading, setLoading] = useState(true)
   const [loadingForm, setLoadingForm] = useState(false)
+  const [uploading, setUploading] = useState(false)
   const [pageError, setPageError] = useState('')
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({})
   const [gpsStatus, setGpsStatus] = useState('')
@@ -288,10 +294,11 @@ export default function ListingsManager({ canDelete, initialListings = [], useLo
       setFormValues(toFormValues({
         ...localListing,
         descriptionEn: localListing.descriptionEn ?? '',
+        area: localListing.area ?? null,
         areaSqm: localListing.areaSqm ?? null,
         bedrooms: localListing.bedrooms ?? null,
         bathrooms: localListing.bathrooms ?? null,
-        parkingSpaces: localListing.parkingSpaces ?? null,
+        parkingAvailable: localListing.parkingAvailable ?? null,
         swimmingPool: localListing.swimmingPool ?? null,
         lat: localListing.lat ?? null,
         lng: localListing.lng ?? null,
@@ -346,10 +353,11 @@ export default function ListingsManager({ canDelete, initialListings = [], useLo
       setFormValues(toFormValues({
         ...localListing,
         descriptionEn: localListing.descriptionEn ?? '',
+        area: localListing.area ?? null,
         areaSqm: localListing.areaSqm ?? null,
         bedrooms: localListing.bedrooms ?? null,
         bathrooms: localListing.bathrooms ?? null,
-        parkingSpaces: localListing.parkingSpaces ?? null,
+        parkingAvailable: localListing.parkingAvailable ?? null,
         swimmingPool: localListing.swimmingPool ?? null,
         lat: localListing.lat ?? null,
         lng: localListing.lng ?? null,
@@ -412,11 +420,12 @@ export default function ListingsManager({ canDelete, initialListings = [], useLo
       titleEn: formValues.titleEn.trim(),
       descriptionEn: formValues.descriptionEn.trim(),
       locationEn: formValues.locationEn.trim(),
+      area: formValues.area || null,
       price: formValues.price.trim(),
       areaSqm: formValues.areaSqm.trim(),
       bedrooms: formValues.bedrooms.trim(),
       bathrooms: formValues.bathrooms.trim(),
-      parkingSpaces: formValues.parkingAvailable ? 1 : '',
+      parkingAvailable: formValues.parkingAvailable,
       swimmingPool: formValues.swimmingPool,
       lat: formValues.lat,
       lng: formValues.lng,
@@ -435,13 +444,14 @@ export default function ListingsManager({ canDelete, initialListings = [], useLo
         transaction: payload.transaction,
         status: payload.status,
         featured: payload.featured,
+        area: payload.area,
         price: payload.price,
         priceUnit: payload.priceUnit,
         descriptionEn: payload.descriptionEn,
         areaSqm: payload.areaSqm ? Number(payload.areaSqm) : null,
         bedrooms: payload.bedrooms ? Number(payload.bedrooms) : null,
         bathrooms: payload.bathrooms ? Number(payload.bathrooms) : null,
-        parkingSpaces: payload.parkingSpaces ? 1 : null,
+        parkingAvailable: Boolean(payload.parkingAvailable),
         swimmingPool: payload.swimmingPool ? true : null,
         lat: payload.lat ? Number(payload.lat) : null,
         lng: payload.lng ? Number(payload.lng) : null,
@@ -522,31 +532,38 @@ export default function ListingsManager({ canDelete, initialListings = [], useLo
       return
     }
 
+    setUploading(true)
+    setFieldErrors((current) => {
+      if (!current.photos) return current
+      const next = { ...current }
+      delete next.photos
+      return next
+    })
+
     try {
-      const nextPhotos = await Promise.all(
-        fileList.map(
-          (file) =>
-            new Promise<string>((resolve, reject) => {
-              const reader = new FileReader()
-              reader.onload = () => resolve(typeof reader.result === 'string' ? reader.result : '')
-              reader.onerror = () => reject(new Error('read failed'))
-              reader.readAsDataURL(file)
-            })
-        )
+      const results = await Promise.all(
+        fileList.map(async (file) => {
+          const body = new FormData()
+          body.append('file', file)
+          const response = await fetch('/api/upload', { method: 'POST', body })
+          if (!response.ok) {
+            const json = (await response.json().catch(() => ({}))) as { error?: string }
+            throw new Error(json.error ?? 'Upload failed.')
+          }
+          const json = (await response.json()) as { url: string }
+          return json.url
+        })
       )
 
       setFormValues((current) => ({
         ...current,
-        photos: [...current.photos, ...nextPhotos.filter(Boolean)].slice(0, 12),
+        photos: [...current.photos, ...results].slice(0, 12),
       }))
-      setFieldErrors((current) => {
-        if (!current.photos) return current
-        const next = { ...current }
-        delete next.photos
-        return next
-      })
-    } catch {
-      setFieldErrors((current) => ({ ...current, photos: 'Unable to read selected images.' }))
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Upload failed.'
+      setFieldErrors((current) => ({ ...current, photos: message }))
+    } finally {
+      setUploading(false)
     }
   }
 
@@ -618,7 +635,7 @@ export default function ListingsManager({ canDelete, initialListings = [], useLo
     return <div className={styles.panel}>Loading listings...</div>
   }
 
-  const isSaving = isPending && (mode === 'create' || mode === 'edit')
+  const isSaving = (isPending && (mode === 'create' || mode === 'edit')) || uploading
   const isEditing = mode === 'edit'
   const normalizedSearch = searchQuery.trim().toLowerCase()
   const filteredListings = listings.filter((listing) => {
@@ -780,7 +797,7 @@ export default function ListingsManager({ canDelete, initialListings = [], useLo
                     <div className={styles.factChips}>
                       {listing.bedrooms ? <span className={styles.factChip}>{listing.bedrooms} bed</span> : null}
                       {listing.bathrooms ? <span className={styles.factChip}>{listing.bathrooms} bath</span> : null}
-                      {listing.parkingSpaces ? <span className={styles.factChip}>Parking</span> : null}
+                      {listing.parkingAvailable ? <span className={styles.factChip}>Parking</span> : null}
                       {listing.lat != null && listing.lng != null ? <span className={styles.factChip}>GPS saved</span> : null}
                     </div>
 
@@ -879,6 +896,11 @@ export default function ListingsManager({ canDelete, initialListings = [], useLo
                 <span className={styles.label}>Featured</span>
                 <div className={styles.readonlyValue}>{formValues.featured ? 'Yes' : 'No'}</div>
               </div>
+            </div>
+
+            <div className={styles.field}>
+              <span className={styles.label}>District</span>
+              <div className={styles.readonlyValue}>{formValues.area ? capitalize(formValues.area) : '—'}</div>
             </div>
 
             {formValues.photos.length > 0 ? (
@@ -1037,18 +1059,33 @@ export default function ListingsManager({ canDelete, initialListings = [], useLo
             </div>
 
             <label className={styles.field}>
+              <span className={styles.label}>District</span>
+              <select className={styles.select} value={formValues.area} onChange={(event) => updateField('area', event.target.value)}>
+                <option value="">— Not set —</option>
+                <option value="sikhottabong">Sikhottabong</option>
+                <option value="phonxay">Phonxay</option>
+                <option value="chanthabouly">Chanthabouly</option>
+                <option value="xaysetha">Xaysetha</option>
+              </select>
+            </label>
+
+            <label className={styles.field}>
               <span className={styles.label}>Property photos</span>
               <input
                 className={styles.input}
                 type="file"
                 accept="image/*"
                 multiple
+                disabled={uploading}
                 onChange={(event) => {
                   void handlePhotoUpload(event.target.files)
                   event.target.value = ''
                 }}
               />
-              <span className={styles.helpText}>Add one or more pictures from your phone or computer.</span>
+              {uploading
+                ? <span className={styles.helpText}>Uploading...</span>
+                : <span className={styles.helpText}>Add one or more pictures from your phone or computer.</span>
+              }
               {fieldErrors.photos ? <span className={styles.fieldError}>{fieldErrors.photos}</span> : null}
               {formValues.photos.length > 0 ? (
                 <div className={styles.photoGrid}>

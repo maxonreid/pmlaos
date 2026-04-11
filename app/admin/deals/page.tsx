@@ -8,6 +8,7 @@ export default function AdminDealsPage() {
     id: listing.id,
     title: listing.titleEn,
     price: listing.price,
+    transaction: listing.transaction as 'sale' | 'rent',
   }))
 
   const clients = adminClients.map((client) => ({

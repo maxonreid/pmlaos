@@ -86,6 +86,7 @@
   "filterAmenityGym": "ຫ້ອງຟິດເນດ",
   "filterAmenityPool": "ສະລອຍນໍ້າ",
   "filterAmenityParking": "ບ່ອນຈອດລົດ",
+  "filterToggleLabel": "ຕົວກອງ",
   "applyFilters": "ນໍາໃຊ້ຕົວກອງ",
   "clearFilters": "ລ້າງຕົວກອງ",
   "noResults": "ບໍ່ພົບລາຍການສໍາລັບຕົວກອງນີ້."
@@ -107,6 +108,7 @@
   "bedrooms": "ຫ້ອງນອນ",
   "bathrooms": "ຫ້ອງນໍ້າ",
   "parking": "ບ່ອນຈອດລົດ",
+  "parkingYes": "ມີ",
   "buildingArea": "ພື້ນທີ່ອາຄານ",
   "landArea": "ພື້ນທີ່ດິນ",
   "description": "ກ່ຽວກັບອະສັງຫາ",
@@ -140,15 +142,6 @@
   "amenityUtilities": "ສາທາລະນູປະໂພກຄົບ",
   "sideSubtitle": "ສົ່ງຂໍ້ຄວາມຫາເຮົາໂດຍກົງເພື່ອນັດຊົມ ຫຼື ຖາມຄໍາຖາມ.",
   "sideNote": "ໂດຍທົ່ວໄປຕອບພາຍໃນສອງສາມຊົ່ວໂມງ."
-},
-"contact": {
-  "form": {
-    "name": "ຊື່ເຕັມ",
-    "phone": "ໂທລະສັບ / WhatsApp",
-    "message": "ຂໍ້ຄວາມ",
-    "submit": "ສົ່ງຂໍ້ຄວາມ",
-    "success": "ຂໍຂອບໃຈ! ພວກເຮົາຈະຕິດຕໍ່ຫາທ່ານໃນໄວໆນີ້."
-  }
 },
 "notFound": {
     "title": "ໜ້າໄໝ່",

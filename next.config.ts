@@ -6,11 +6,16 @@ const withNextIntl = createNextIntlPlugin('./i18n/request.ts')
 const nextConfig: NextConfig = {
   serverExternalPackages: ['@prisma/client'],
   images: {
-    domains: ['images.unsplash.com'],
+    domains: ['images.unsplash.com', 'res.cloudinary.com'],
     remotePatterns: [
       {
         protocol: 'https',
         hostname: 'images.unsplash.com',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'res.cloudinary.com',
         pathname: '/**',
       },
     ],
