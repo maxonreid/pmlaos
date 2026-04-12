@@ -1,8 +1,9 @@
 'use client'
 
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
+import { signOut } from 'next-auth/react'
 import styles from './layout.module.css'
 
 interface NavItem {
@@ -43,6 +44,16 @@ const navSections: NavSection[] = [
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
             <polyline points="9 22 9 12 15 12 15 22" />
+          </svg>
+        ),
+      },
+      {
+        label: 'Areas',
+        href: '/admin/areas',
+        icon: (
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+            <circle cx="12" cy="10" r="3" />
           </svg>
         ),
       },
@@ -92,9 +103,9 @@ const footerNavItem: NavItem = {
 const mobileNavItems: NavItem[] = [
   navSections[0].items[0],
   navSections[1].items[0],
+  navSections[1].items[1],
   navSections[2].items[0],
   navSections[2].items[1],
-  footerNavItem,
 ]
 
 interface AdminLayoutProps {
@@ -109,10 +120,17 @@ interface AdminLayoutProps {
 
 export default function AdminLayout({ children, user, pageTitle, pageDescription }: AdminLayoutProps) {
   const pathname = usePathname()
+  const router = useRouter()
   const [isDesktop, setIsDesktop] = useState(false)
   const [desktopSidebarExpanded, setDesktopSidebarExpanded] = useState(true)
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false)
   const isActiveRoute = (href: string) => pathname === href || (href !== '/admin' && pathname.startsWith(href))
+
+  const handleLogout = async () => {
+    await signOut({ redirect: false })
+    router.push('/admin/login')
+    router.refresh()
+  }
 
   useEffect(() => {
     const mediaQuery = window.matchMedia('(min-width: 900px)')
@@ -240,6 +258,21 @@ export default function AdminLayout({ children, user, pageTitle, pageDescription
               <p className={styles.userRole}>{user.role}</p>
             </div>
           </div>
+          <button
+            type="button"
+            className={styles.logoutButton}
+            onClick={handleLogout}
+            aria-label="Logout"
+          >
+            <span className={styles.navIcon}>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                <polyline points="16 17 21 12 16 7" />
+                <line x1="21" y1="12" x2="9" y2="12" />
+              </svg>
+            </span>
+            <span className={styles.navText}>Logout</span>
+          </button>
           <p className={styles.footerNote}>Internal admin workspace.</p>
         </div>
       </aside>
@@ -250,6 +283,20 @@ export default function AdminLayout({ children, user, pageTitle, pageDescription
             <h1 className={styles.headerTitle}>{pageTitle}</h1>
             {pageDescription ? <p className={styles.headerDescription}>{pageDescription}</p> : null}
           </div>
+          {!isDesktop && (
+            <button
+              type="button"
+              className={styles.mobileMenuButton}
+              aria-label="Open menu"
+              onClick={() => setMobileSidebarOpen(true)}
+            >
+              <span className={styles.menuIcon}>
+                <span />
+                <span />
+                <span />
+              </span>
+            </button>
+          )}
         </header>
         <div className={styles.content}>
           {children}

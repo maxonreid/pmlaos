@@ -29,8 +29,8 @@ type ClientOption = {
 
 type Props = {
   initialDeals?: Deal[]
-  listings: ListingOption[]
-  clients: ClientOption[]
+  listings?: ListingOption[]
+  clients?: ClientOption[]
 }
 
 type FormValues = {
@@ -119,7 +119,7 @@ function TrashIcon() {
   )
 }
 
-export default function DealsManager({ initialDeals = [], listings, clients }: Props) {
+export default function DealsManager({ initialDeals = [], listings = [], clients = [] }: Props) {
   const [deals, setDeals] = useState<Deal[]>(() => sortDeals(initialDeals))
   const [modalMode, setModalMode] = useState<ModalMode>('list')
   const [editingDeal, setEditingDeal] = useState<Deal | null>(null)

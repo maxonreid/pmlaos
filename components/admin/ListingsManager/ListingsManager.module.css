@@ -1,7 +1,7 @@
 .stack {
   display: flex;
   flex-direction: column;
-  gap: 0.85rem;
+  gap: 1rem;
 }
 
 .panel,
@@ -11,19 +11,20 @@
   background: #fff;
   border: 1px solid #e5e7eb;
   border-radius: 16px;
-  padding: 1rem;
+  padding: 1.25rem;
 }
 
 .toolbar {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
-  padding: 1rem 1.1rem;
+  gap: 1rem;
+  padding: 1.25rem 1.5rem;
   border: 1px solid #e5e7eb;
   border-radius: 18px;
   background:
     radial-gradient(circle at top right, rgba(245, 158, 11, 0.14), transparent 36%),
     linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.06);
 }
 
 .toolbarText,
@@ -38,7 +39,7 @@
 }
 
 .toolbarText {
-  font-size: 0.9rem;
+  font-size: 0.9375rem;
 }
 
 .toolbarIntro {
@@ -50,23 +51,24 @@
 .filtersPanel {
   display: flex;
   flex-direction: column;
-  gap: 0.85rem;
-  padding: 1rem 1.1rem;
+  gap: 1rem;
+  padding: 1.25rem 1.5rem;
   border: 1px solid #e5e7eb;
   border-radius: 18px;
   background: #fff;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.06);
 }
 
 .searchField,
 .filterGroup {
   display: flex;
   flex-direction: column;
-  gap: 0.45rem;
+  gap: 0.5rem;
 }
 
 .searchLabel,
 .filterLabel {
-  font-size: 0.8rem;
+  font-size: 0.8125rem;
   font-weight: 700;
   color: #475569;
 }
@@ -74,20 +76,26 @@
 .filterChips {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.55rem;
+  gap: 0.625rem;
 }
 
 .filterChip,
 .clearFiltersButton {
-  min-height: 40px;
-  padding: 0.55rem 0.85rem;
+  min-height: 44px;
+  padding: 0.625rem 1rem;
   border-radius: 999px;
   border: 1px solid #dbe3ec;
   background: #fff;
   color: #334155;
-  font-size: 0.84rem;
+  font-size: 0.875rem;
   font-weight: 700;
   cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.filterChip:active,
+.clearFiltersButton:active {
+  transform: scale(0.96);
 }
 
 .filterChipActive {
@@ -117,18 +125,27 @@
 .secondaryButton,
 .dangerButton,
 .backButton {
-  min-height: 44px;
+  min-height: 48px;
   border-radius: 12px;
   border: 1px solid transparent;
-  font-size: 0.92rem;
+  font-size: 0.9375rem;
   font-weight: 700;
   cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.primaryButton:active,
+.secondaryButton:active,
+.dangerButton:active,
+.backButton:active {
+  transform: scale(0.97);
 }
 
 .primaryButton {
   background: var(--color-primary);
   color: #fff;
-  padding: 0.8rem 1rem;
+  padding: 0.875rem 1.25rem;
+  box-shadow: 0 1px 3px rgba(13, 27, 62, 0.2);
 }
 
 .secondaryButton,
@@ -136,14 +153,14 @@
   background: #fff;
   color: #0f172a;
   border-color: #cbd5e1;
-  padding: 0.8rem 1rem;
+  padding: 0.875rem 1.25rem;
 }
 
 .dangerButton {
   background: #fff1f2;
   color: #be123c;
   border-color: #fecdd3;
-  padding: 0.8rem 1rem;
+  padding: 0.875rem 1.25rem;
 }
 
 .primaryButton:disabled,
@@ -176,7 +193,7 @@
 .recordList {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 0.75rem;
+  gap: 1rem;
 }
 
 .recordCard {
@@ -188,7 +205,7 @@
 
 .recordMedia {
   position: relative;
-  min-height: 190px;
+  min-height: 200px;
   background: linear-gradient(135deg, #dbeafe, #f8fafc);
 }
 
@@ -197,7 +214,7 @@
 }
 
 .recordImageFallback {
-  min-height: 190px;
+  min-height: 200px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -211,8 +228,8 @@
 .recordBody {
   display: flex;
   flex-direction: column;
-  gap: 0.85rem;
-  padding: 1rem;
+  gap: 1rem;
+  padding: 1.25rem;
 }
 
 .recordTop {
@@ -235,13 +252,13 @@
 }
 
 .recordTitle {
-  font-size: 1.04rem;
+  font-size: 1.0625rem;
   font-weight: 800;
   line-height: 1.3;
 }
 
 .recordSubtle {
-  font-size: 0.82rem;
+  font-size: 0.875rem;
 }
 
 .categoryPill,
@@ -251,14 +268,14 @@
   display: inline-flex;
   align-items: center;
   border-radius: 999px;
-  font-size: 0.74rem;
+  font-size: 0.75rem;
   font-weight: 700;
   white-space: nowrap;
 }
 
 .categoryPill,
 .transactionPill {
-  padding: 0.3rem 0.65rem;
+  padding: 0.375rem 0.75rem;
   background: #eff6ff;
   color: #1d4ed8;
 }
@@ -279,19 +296,19 @@
 .recordValue {
   margin: 0;
   color: #0f172a;
-  font-size: 1.08rem;
+  font-size: 1.125rem;
   font-weight: 800;
 }
 
 .recordArea {
-  padding: 0.38rem 0.72rem;
+  padding: 0.4rem 0.8rem;
   background: #fff7ed;
   color: #c2410c;
 }
 
 .recordDescription {
   margin: 0;
-  font-size: 0.88rem;
+  font-size: 0.9375rem;
   line-height: 1.6;
   color: #475569;
 }
@@ -308,8 +325,8 @@
   display: inline-flex;
   align-items: center;
   border-radius: 999px;
-  padding: 0.3rem 0.65rem;
-  font-size: 0.72rem;
+  padding: 0.375rem 0.75rem;
+  font-size: 0.75rem;
   font-weight: 700;
   white-space: nowrap;
 }
@@ -342,11 +359,11 @@
 .factChips {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.45rem;
+  gap: 0.5rem;
 }
 
 .factChip {
-  padding: 0.38rem 0.72rem;
+  padding: 0.4rem 0.8rem;
   background: #f8fafc;
   border: 1px solid #e2e8f0;
   color: #334155;
@@ -355,36 +372,36 @@
 .actionRow {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 0.65rem;
+  gap: 0.75rem;
 }
 
 .actionButton,
 .viewButton {
   border-radius: 12px;
-  padding: 0.82rem 1rem;
-  font-size: 0.92rem;
+  padding: 0.875rem 1rem;
+  font-size: 0.9375rem;
   font-weight: 700;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 0.55rem;
+  gap: 0.625rem;
   text-align: center;
   transition: transform 140ms ease, box-shadow 140ms ease, border-color 140ms ease, background-color 140ms ease;
+  min-height: 48px;
 }
 
 .actionButton {
   cursor: pointer;
 }
 
-.actionButton:hover,
-.viewButton:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
+.actionButton:active,
+.viewButton:active {
+  transform: scale(0.96);
 }
 
 .actionIcon {
-  width: 1rem;
-  height: 1rem;
+  width: 1.125rem;
+  height: 1.125rem;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -392,8 +409,8 @@
 }
 
 .actionIcon svg {
-  width: 1rem;
-  height: 1rem;
+  width: 1.125rem;
+  height: 1.125rem;
 }
 
 .viewButton {
@@ -421,29 +438,29 @@
 .formPanel {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 1.25rem;
 }
 
 .formHeader {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 0.875rem;
 }
 
 .form {
   display: flex;
   flex-direction: column;
-  gap: 0.9rem;
+  gap: 1.125rem;
 }
 
 .field {
   display: flex;
   flex-direction: column;
-  gap: 0.38rem;
+  gap: 0.5rem;
 }
 
 .label {
-  font-size: 0.84rem;
+  font-size: 0.875rem;
   font-weight: 700;
   color: #334155;
 }
@@ -454,15 +471,16 @@
   width: 100%;
   border: 1px solid #cbd5e1;
   border-radius: 12px;
-  padding: 0.82rem 0.9rem;
-  font-size: 0.95rem;
+  padding: 0.875rem 1rem;
+  font-size: 1rem;
   color: #0f172a;
   background: #fff;
+  min-height: 48px;
 }
 
 .textarea {
   resize: vertical;
-  min-height: 120px;
+  min-height: 140px;
 }
 
 .input:focus,
@@ -475,7 +493,7 @@
 .grid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 0.9rem;
+  gap: 1.125rem;
 }
 
 .checkboxField {
@@ -513,20 +531,28 @@
 }
 
 .helpText {
-  font-size: 0.82rem;
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.fieldError {
+  font-size: 0.875rem;
+  color: #dc2626;
+  font-weight: 600;
 }
 
 .readonlyValue {
-  padding: 0.75rem 0;
+  padding: 0.875rem 0;
   font-size: 1rem;
   color: #1e293b;
   border-bottom: 1px solid #e2e8f0;
+  line-height: 1.5;
 }
 
 .photoGrid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0.75rem;
+  gap: 0.875rem;
 }
 
 .photoCard {
@@ -546,37 +572,47 @@
 
 .photoRemove {
   width: 100%;
-  min-height: 40px;
+  min-height: 44px;
   border: 0;
   border-top: 1px solid #e2e8f0;
   background: #fff;
   color: #be123c;
-  font-size: 0.88rem;
+  font-size: 0.9375rem;
   font-weight: 700;
   cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.photoRemove:active {
+  background: #fef2f2;
+  transform: scale(0.98);
 }
 
 .locationActions {
   display: flex;
   flex-direction: column;
-  gap: 0.65rem;
+  gap: 0.75rem;
 }
 
 .manualToggle {
   display: inline-flex;
   align-items: center;
-  gap: 0.45rem;
-  min-height: 44px;
-  padding: 0.55rem 1rem;
+  gap: 0.5rem;
+  min-height: 48px;
+  padding: 0.625rem 1.125rem;
   border-radius: 999px;
   border: 1px solid #dbe3ec;
   background: #fff;
   color: #334155;
-  font-size: 0.88rem;
+  font-size: 0.9375rem;
   font-weight: 700;
   cursor: pointer;
   user-select: none;
-  transition: border-color 140ms ease, background 140ms ease, color 140ms ease;
+  transition: all 0.2s ease;
+}
+
+.manualToggle:active {
+  transform: scale(0.96);
 }
 
 .manualToggle input[type='checkbox'] {
@@ -604,8 +640,10 @@
   background: #fff1f2;
   border: 1px solid #fecdd3;
   border-radius: 14px;
-  padding: 0.85rem 0.95rem;
+  padding: 1rem 1.25rem;
   margin: 0;
+  font-size: 0.9375rem;
+  line-height: 1.5;
 }
 
 .modalOverlay {
@@ -615,47 +653,49 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 1rem;
+  padding: 1.25rem;
   background: rgba(15, 23, 42, 0.5);
+  backdrop-filter: blur(4px);
 }
 
 .modalCard {
-  width: min(100%, 420px);
+  width: min(100%, 440px);
   background: #fff;
   border: 1px solid #e5e7eb;
   border-radius: 20px;
-  padding: 1.2rem;
-  box-shadow: 0 24px 60px rgba(15, 23, 42, 0.2);
+  padding: 1.5rem;
+  box-shadow: 0 24px 60px rgba(15, 23, 42, 0.25);
 }
 
 .modalTitle {
-  margin: 0.3rem 0 0;
+  margin: 0.375rem 0 0;
   color: var(--color-primary);
-  font-size: 1.08rem;
+  font-size: 1.125rem;
   font-weight: 800;
+  line-height: 1.3;
 }
 
 .modalText {
-  margin: 0.8rem 0 0;
+  margin: 1rem 0 0;
   color: #475569;
-  font-size: 0.92rem;
+  font-size: 0.9375rem;
   line-height: 1.6;
 }
 
 .modalActions {
-  margin-top: 1rem;
+  margin-top: 1.25rem;
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0.65rem;
+  gap: 0.75rem;
 }
 
 .stickyActions {
   position: sticky;
-  bottom: calc(4.9rem + env(safe-area-inset-bottom));
+  bottom: calc(5.5rem + env(safe-area-inset-bottom));
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0.65rem;
-  padding-top: 0.5rem;
+  gap: 0.75rem;
+  padding-top: 0.75rem;
   background: linear-gradient(180deg, rgba(255, 255, 255, 0), #fff 22%);
 }
 

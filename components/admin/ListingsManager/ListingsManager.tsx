@@ -243,7 +243,7 @@ export default function ListingsManager({ canDelete, initialListings = [], useLo
     } finally {
       setLoading(false)
     }
-  }, [initialListings, useLocalData])
+  }, [useLocalData])
 
   useEffect(() => {
     void loadListings()

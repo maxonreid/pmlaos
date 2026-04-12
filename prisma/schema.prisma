@@ -65,18 +65,24 @@ enum InquiryStatus {
   closed
 }
 
-enum ListingArea {
-  sikhottabong
-  phonxay
-  chanthabouly
-  xaysetha
-}
-
 enum ClientLanguage {
   en
   lo
   zh
   other
+}
+
+model Area {
+  id        String    @id @default(uuid())
+  nameEn    String    @unique
+  nameLo    String
+  nameZh    String
+  slug      String    @unique
+  active    Boolean   @default(true)
+  order     Int       @default(0)
+  listings  Listing[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
 }
 
 model User {
@@ -98,7 +104,8 @@ model Listing {
   transaction    TransactionType
   status         ListingStatus   @default(available)
   featured       Boolean         @default(false)
-  area           ListingArea?
+  areaId         String?
+  area           Area?           @relation(fields: [areaId], references: [id])
   titleEn        String
   titleLo        String
   titleZh        String

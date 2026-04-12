@@ -1,8 +1,6 @@
 'use client'
 
 import { FormEvent, useState } from 'react'
-import adminListingsSeed from '@/lib/adminListingsSeed.json'
-import { adminSystemUsers } from '@/lib/adminDummy'
 import CloseDealModal from '@/components/admin/CloseDealModal/CloseDealModal'
 import styles from './ClientsManager.module.css'
 
@@ -14,8 +12,8 @@ type ClientRecord = {
   name: string
   whatsapp: string
   email?: string | null
-  nationality: Nationality
-  gender: Gender
+  nationality?: string | null
+  gender?: string | null
   interestType: string
   budgetMin?: number | null
   budgetMax?: number | null
@@ -26,7 +24,7 @@ type ClientRecord = {
   assignedToId?: string | null
   speakLaoThai?: boolean
   speakEnglish?: boolean
-  createdAt?: string
+  createdAt?: string | Date
 }
 
 type FormValues = {
@@ -48,15 +46,6 @@ type FormValues = {
 }
 
 const nationalities: Nationality[] = ['Lao', 'Thai', 'Vietnamese', 'Chinese', 'International']
-
-const activeUsers = adminSystemUsers.filter((u) => u.status === 'active')
-
-const listingOptions = adminListingsSeed.map((listing) => ({
-  id: listing.id,
-  title: listing.titleEn,
-  price: listing.price,
-  transaction: listing.transaction as 'sale' | 'rent',
-}))
 
 
 const EMPTY_FORM: FormValues = {
@@ -81,7 +70,11 @@ function sortClients(items: ClientRecord[]) {
   return [...items].sort((a, b) => a.name.localeCompare(b.name))
 }
 
-function toFormValues(client: ClientRecord): FormValues {
+function toFormValues(client: ClientRecord, activeUsers: Array<{ id: string; name: string }> = []): FormValues {
+  const assignedAgent = client.assignedToId 
+    ? activeUsers.find(u => u.id === client.assignedToId)
+    : null
+
   return {
     name: client.name ?? '',
     whatsapp: client.whatsapp ?? '',
@@ -95,9 +88,7 @@ function toFormValues(client: ClientRecord): FormValues {
     source: client.source ?? 'direct',
     notes: client.notes ?? '',
     interestedProperties: client.interestedPropertyIds ?? [],
-    assignedToName: client.assignedToId
-      ? (adminSystemUsers.find((u) => u.id === client.assignedToId)?.name ?? '')
-      : '',
+    assignedToName: assignedAgent?.name ?? '',
     speakLaoThai: client.speakLaoThai ?? false,
     speakEnglish: client.speakEnglish ?? false,
   }
@@ -156,10 +147,17 @@ function TrashIcon() {
 
 type Props = {
   initialClients?: ClientRecord[]
+  activeUsers?: Array<{ id: string; name: string }>
+  listings?: Array<{ id: string; titleEn: string; price: any; transaction: any }>
   userRole?: string
 }
 
-export default function ClientsManager({ initialClients = [], userRole }: Props) {
+export default function ClientsManager({ 
+  initialClients = [], 
+  activeUsers = [], 
+  listings = [], 
+  userRole 
+}: Props) {
   const [clients, setClients] = useState<ClientRecord[]>(() => sortClients(initialClients))
   const [mode, setMode] = useState<'list' | 'create' | 'edit' | 'view'>('list')
   const [editingId, setEditingId] = useState<string | null>(null)
@@ -169,6 +167,13 @@ export default function ClientsManager({ initialClients = [], userRole }: Props)
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({})
   const [clientPendingDelete, setClientPendingDelete] = useState<ClientRecord | null>(null)
   const [dealClient, setDealClient] = useState<ClientRecord | null>(null)
+  
+  const listingOptions = listings.map(l => ({
+    id: l.id,
+    title: l.titleEn,
+    price: Number(l.price),
+    transaction: l.transaction as 'sale' | 'rent',
+  }))
 
   const normalizedSearch = searchQuery.trim().toLowerCase()
   const filteredClients = clients.filter((client) => {
@@ -212,14 +217,14 @@ export default function ClientsManager({ initialClients = [], userRole }: Props)
   const openView = (client: ClientRecord) => {
     setFieldErrors({})
     setEditingId(client.id)
-    setFormValues(toFormValues(client))
+    setFormValues(toFormValues(client, activeUsers))
     setMode('view')
   }
 
   const openEdit = (client: ClientRecord) => {
     setFieldErrors({})
     setEditingId(client.id)
-    setFormValues(toFormValues(client))
+    setFormValues(toFormValues(client, activeUsers))
     setMode('edit')
   }
 

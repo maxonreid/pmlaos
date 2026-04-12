@@ -3,7 +3,7 @@ import { prisma } from '@/lib/prisma'
 export type PublicListing = {
   id: string
   slug: string
-  area: string | null
+  areaSlug: string | null
   category: 'house' | 'apartment' | 'land'
   transaction: 'sale' | 'rent'
   status: 'available' | 'sold' | 'rented' | 'hidden'
@@ -24,21 +24,13 @@ export type PublicListing = {
   photos: string[]
 }
 
-export type ListingArea = 'sikhottabong' | 'phonxay' | 'chanthabouly' | 'xaysetha'
 export type PropertyCategory = 'house' | 'apartment' | 'land'
 export type TransactionType = 'sale' | 'rent'
-
-export const LISTING_AREAS: ListingArea[] = [
-  'sikhottabong',
-  'phonxay',
-  'chanthabouly',
-  'xaysetha',
-]
 
 export type PublicFilters = {
   category?: PropertyCategory
   transaction?: TransactionType
-  area?: ListingArea
+  areaSlug?: string
   query?: string
   minPrice?: number
   maxPrice?: number
@@ -51,7 +43,7 @@ export type PublicFilters = {
 function mapListing(raw: {
   id: string
   slug: string
-  area: string | null
+  area: { slug: string } | null
   category: string
   transaction: string
   status: string
@@ -74,7 +66,7 @@ function mapListing(raw: {
   return {
     id: raw.id,
     slug: raw.slug,
-    area: raw.area,
+    areaSlug: raw.area?.slug ?? null,
     category: raw.category as PublicListing['category'],
     transaction: raw.transaction as PublicListing['transaction'],
     status: raw.status as PublicListing['status'],
@@ -99,7 +91,7 @@ function mapListing(raw: {
 const LISTING_SELECT = {
   id: true,
   slug: true,
-  area: true,
+  area: { select: { slug: true } },
   category: true,
   transaction: true,
   status: true,
@@ -121,14 +113,14 @@ const LISTING_SELECT = {
 } as const
 
 export async function getPublicListings(filters: PublicFilters = {}): Promise<PublicListing[]> {
-  const { category, transaction, area, query, minPrice, maxPrice, minArea, maxArea, minBedrooms, amenities } = filters
+  const { category, transaction, areaSlug, query, minPrice, maxPrice, minArea, maxArea, minBedrooms, amenities } = filters
 
   const rows = await prisma.listing.findMany({
     where: {
       status: 'available',
       ...(category ? { category } : {}),
       ...(transaction ? { transaction } : {}),
-      ...(area ? { area } : {}),
+      ...(areaSlug ? { area: { slug: areaSlug } } : {}),
       ...(query
         ? {
             OR: [

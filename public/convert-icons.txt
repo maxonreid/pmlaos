@@ -1,0 +1,1 @@
+Placeholder SVG icons created. Convert to PNG for production using: npm install -g svgexport && svgexport icon-192x192.svg icon-192x192.png && svgexport icon-512x512.svg icon-512x512.png

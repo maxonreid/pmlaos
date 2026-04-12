@@ -59,7 +59,7 @@ export async function POST(req: NextRequest) {
       transaction: data.transaction,
       status: data.status,
       featured: data.featured,
-      area: data.area ?? undefined,
+      areaId: data.areaId ?? undefined,
       titleEn: data.titleEn,
       titleLo: data.titleEn,
       titleZh: data.titleEn,
