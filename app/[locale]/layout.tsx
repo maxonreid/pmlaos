@@ -5,6 +5,7 @@ import { routing } from '@/i18n/routing'
 import Navbar from '@/app/components/Navbar'
 import Footer from '@/app/components/Footer'
 import WhatsAppWidget from '@/components/shared/WhatsAppWidget'
+import IOSInstallPrompt from '@/components/shared/IOSInstallPrompt'
 
 const notoSansLao = Noto_Sans_Lao({
   subsets: ['lao'],
@@ -33,6 +34,7 @@ export default async function LocaleLayout(props: {
         <main>{props.children}</main>
         <Footer locale={locale} />
         <WhatsAppWidget />
+        <IOSInstallPrompt />
       </div>
     </NextIntlClientProvider>
   )

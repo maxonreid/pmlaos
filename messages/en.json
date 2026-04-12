@@ -182,7 +182,14 @@
   },
   "pwa": {
     "installButton": "Install",
-    "installAria": "Install App"
+    "installAria": "Install App",
+    "iosInstallTitle": "Install PM Laos App",
+    "iosInstallDescription": "Add this app to your home screen for quick access and offline support",
+    "iosInstallStep1": "Tap the Share button",
+    "iosInstallStep2": "Scroll and tap \"Add to Home Screen\"",
+    "iosInstallStep3": "Tap \"Add\" to confirm",
+    "iosInstallGotIt": "Got it, thanks!",
+    "iosInstallNeverShow": "Don't show again"
   },
   "whatsapp": {
     "widgetTooltip": "Chat with us on WhatsApp",

@@ -182,7 +182,14 @@
   },
   "pwa": {
     "installButton": "安装",
-    "installAria": "安装应用"
+    "installAria": "安装应用",
+    "iosInstallTitle": "安装 PM Laos 应用",
+    "iosInstallDescription": "将此应用添加到主屏幕，快速访问并支持离线使用",
+    "iosInstallStep1": "点击分享按钮",
+    "iosInstallStep2": "向下滚动并点击\"添加到主屏幕\"",
+    "iosInstallStep3": "点击\"添加\"确认",
+    "iosInstallGotIt": "知道了，谢谢！",
+    "iosInstallNeverShow": "不再显示"
   },
   "whatsapp": {
     "widgetTooltip": "在 WhatsApp 上与我们聊天",

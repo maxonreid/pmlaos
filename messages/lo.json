@@ -58,7 +58,14 @@
   },
   "pwa": {
     "installButton": "ຕິດຕັ້ງ",
-    "installAria": "ຕິດຕັ້ງແອັບ"
+    "installAria": "ຕິດຕັ້ງແອັບ",
+    "iosInstallTitle": "ຕິດຕັ້ງແອັບ PM Laos",
+    "iosInstallDescription": "ເພີ່ມແອັບນີ້ໃສ່ໜ້າຈໍຫຼັກຂອງທ່ານເພື່ອເຂົ້າເຖິງໄວ ແລະ ໃຊ້ງານໄດ້ແບບອອບລາຍ",
+    "iosInstallStep1": "ກົດປຸ່ມແບ່ງປັນ",
+    "iosInstallStep2": "ເລື່ອນລົງ ແລະ ກົດ \"ເພີ່ມໃສ່ໜ້າຈໍຫຼັກ\"",
+    "iosInstallStep3": "ກົດ \"ເພີ່ມ\" ເພື່ອຢືນຢັນ",
+    "iosInstallGotIt": "ເຂົ້າໃຈແລ້ວ, ຂອບໃຈ!",
+    "iosInstallNeverShow": "ບໍ່ຕ້ອງສະແດງອີກ"
   },
   "whatsapp": {
     "widgetTooltip": "ສົນທະນາກັບພວກເຮົາທາງ WhatsApp",

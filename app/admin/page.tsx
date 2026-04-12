@@ -24,6 +24,15 @@ export default async function AdminDashboardPage() {
       pageDescription="Quick access to all management tools."
     >
       <div className={styles.stack}>
+        <Link href="/" className={styles.homepageCard}>
+          <span className={styles.quickIcon}>🏡</span>
+          <div className={styles.quickContent}>
+            <span className={styles.quickTitle}>Main Homepage</span>
+            <span className={styles.quickMeta}>View the public website</span>
+          </div>
+          <span className={styles.quickArrow}>→</span>
+        </Link>
+
         <section className={styles.quickLinksGrid}>
           <Link href="/admin/listings" className={styles.quickLink}>
             <span className={styles.quickIcon}>🏠</span>
