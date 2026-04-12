@@ -166,6 +166,23 @@ export async function getFeaturedListings(): Promise<PublicListing[]> {
   return rows.map(mapListing)
 }
 
+export async function getSponsoredListing(): Promise<PublicListing | null> {
+  const now = new Date()
+  const row = await prisma.listing.findFirst({
+    where: {
+      sponsored: true,
+      status: 'available',
+      OR: [
+        { sponsoredUntil: null },
+        { sponsoredUntil: { gte: now } }
+      ]
+    },
+    select: LISTING_SELECT,
+    orderBy: { createdAt: 'desc' },
+  })
+  return row ? mapListing(row) : null
+}
+
 export async function getListingBySlug(slug: string): Promise<PublicListing | null> {
   const row = await prisma.listing.findUnique({
     where: { slug },

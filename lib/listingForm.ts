@@ -8,6 +8,8 @@ export type ListingMutationInput = {
   transaction: (typeof TRANSACTION_VALUES)[number]
   status: (typeof STATUS_VALUES)[number]
   featured: boolean
+  sponsored: boolean
+  sponsoredUntil: string | null
   areaId: string | null
   titleEn: string
   descriptionEn: string
@@ -156,6 +158,26 @@ function getPhotos(
   return photos
 }
 
+function getOptionalDate(
+  body: Record<string, unknown>,
+  key: string,
+  fieldErrors: Record<string, string>
+) {
+  const value = body[key]
+  if (value === undefined || value === null || value === '') return null
+
+  const dateStr = typeof value === 'string' ? value.trim() : ''
+  if (!dateStr) return null
+
+  const date = new Date(dateStr)
+  if (Number.isNaN(date.getTime())) {
+    fieldErrors[key] = 'Invalid date format.'
+    return null
+  }
+
+  return dateStr
+}
+
 export function validateListingPayload(body: unknown): ValidationResult {
   if (!isRecord(body)) {
     return {
@@ -174,6 +196,8 @@ export function validateListingPayload(body: unknown): ValidationResult {
     transaction: getEnumValue(body, 'transaction', TRANSACTION_VALUES, 'Transaction', fieldErrors),
     status: getEnumValue(body, 'status', STATUS_VALUES, 'Status', fieldErrors),
     featured: getBooleanValue(body, 'featured'),
+    sponsored: getBooleanValue(body, 'sponsored'),
+    sponsoredUntil: getOptionalDate(body, 'sponsoredUntil', fieldErrors),
     areaId,
     titleEn: getRequiredString(body, 'titleEn', 'Title', fieldErrors),
     descriptionEn: getRequiredString(body, 'descriptionEn', 'Description', fieldErrors),

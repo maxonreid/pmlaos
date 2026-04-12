@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import styles from '../admin.module.css'
+import areaStyles from './areas.module.css'
 
 interface Area {
   id: string
@@ -143,182 +144,218 @@ export default function AreasManagementClient() {
 
   return (
     <div className={styles.stack}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <h2>Area Management</h2>
-        <button
-          onClick={() => setShowAddForm(!showAddForm)}
-          className={styles.btn}
-        >
-          {showAddForm ? 'Cancel' : '+ Add Area'}
-        </button>
+      <div className={areaStyles.header}>
+        <div className={areaStyles.headerContent}>
+          <div>
+            <h2 className={areaStyles.pageTitle}>Area Management</h2>
+            <p className={areaStyles.pageSubtitle}>
+              {areas.length} {areas.length === 1 ? 'area' : 'areas'} · {areas.filter(a => a.active).length} active
+            </p>
+          </div>
+          <button
+            onClick={() => setShowAddForm(!showAddForm)}
+            className={showAddForm ? areaStyles.btnSecondary : areaStyles.btnPrimary}
+          >
+            {showAddForm ? '✕ Cancel' : '+ Add New Area'}
+          </button>
+        </div>
       </div>
 
       {showAddForm && (
-        <section className={styles.recordCard} style={{ marginBottom: '1.5rem' }}>
-          <h3>Create New Area</h3>
-          <div style={{ display: 'grid', gap: '1rem' }}>
-            <div>
-              <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 500 }}>
-                English Name
+        <section className={areaStyles.formCard}>
+          <div className={areaStyles.formHeader}>
+            <h3 className={areaStyles.formTitle}>Create New Area</h3>
+            <p className={areaStyles.formSubtitle}>Add a new geographic area for property listings</p>
+          </div>
+          <div className={areaStyles.formGrid}>
+            <div className={areaStyles.formGroup}>
+              <label className={areaStyles.label}>
+                English Name <span className={areaStyles.required}>*</span>
               </label>
               <input
                 type="text"
                 value={formData.nameEn}
                 onChange={(e) => setFormData({ ...formData, nameEn: e.target.value })}
                 placeholder="e.g., Sikhottabong"
-                style={{ width: '100%', padding: '0.5rem', fontSize: '1rem' }}
+                className={areaStyles.input}
               />
             </div>
-            <div>
-              <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 500 }}>
-                Lao Name
+            <div className={areaStyles.formGroup}>
+              <label className={areaStyles.label}>
+                Lao Name <span className={areaStyles.required}>*</span>
               </label>
               <input
                 type="text"
                 value={formData.nameLo}
                 onChange={(e) => setFormData({ ...formData, nameLo: e.target.value })}
                 placeholder="e.g., ສີໂຄດຕະບອງ"
-                style={{ width: '100%', padding: '0.5rem', fontSize: '1rem' }}
+                className={areaStyles.input}
               />
             </div>
-            <div>
-              <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 500 }}>
-                Chinese Name
+            <div className={areaStyles.formGroup}>
+              <label className={areaStyles.label}>
+                Chinese Name <span className={areaStyles.required}>*</span>
               </label>
               <input
                 type="text"
                 value={formData.nameZh}
                 onChange={(e) => setFormData({ ...formData, nameZh: e.target.value })}
                 placeholder="e.g., 西科塔蓬"
-                style={{ width: '100%', padding: '0.5rem', fontSize: '1rem' }}
+                className={areaStyles.input}
               />
             </div>
-            <div>
-              <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 500 }}>
-                Order
+            <div className={areaStyles.formGroup}>
+              <label className={areaStyles.label}>
+                Display Order
               </label>
               <input
                 type="number"
                 value={formData.order}
                 onChange={(e) => setFormData({ ...formData, order: parseInt(e.target.value) || 0 })}
-                style={{ width: '100%', padding: '0.5rem', fontSize: '1rem' }}
+                className={areaStyles.input}
+                min="0"
               />
+              <p className={areaStyles.helpText}>Lower numbers appear first</p>
             </div>
-            <div>
-              <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <div className={areaStyles.formGroup}>
+              <label className={areaStyles.checkboxLabel}>
                 <input
                   type="checkbox"
                   checked={formData.active}
                   onChange={(e) => setFormData({ ...formData, active: e.target.checked })}
+                  className={areaStyles.checkbox}
                 />
-                Active
+                <span>Active (visible to users)</span>
               </label>
             </div>
-            <button onClick={handleCreate} className={styles.btn}>
-              Create Area
+          </div>
+          <div className={areaStyles.formActions}>
+            <button onClick={handleCreate} className={areaStyles.btnPrimary}>
+              ✓ Create Area
+            </button>
+            <button onClick={() => setShowAddForm(false)} className={areaStyles.btnSecondary}>
+              Cancel
             </button>
           </div>
         </section>
       )}
 
-      <section className={styles.recordList}>
+      <section className={areaStyles.areaGrid}>
         {areas.length === 0 ? (
-          <p>No areas found.</p>
+          <div className={areaStyles.emptyState}>
+            <div className={areaStyles.emptyIcon}>🗺️</div>
+            <h3 className={areaStyles.emptyTitle}>No areas yet</h3>
+            <p className={areaStyles.emptyText}>Get started by creating your first geographic area</p>
+          </div>
         ) : (
           areas.map((area) => {
             const isEditing = editingId === area.id
 
             return (
-              <article key={area.id} className={styles.recordCard}>
+              <article key={area.id} className={areaStyles.areaCard}>
                 {isEditing ? (
-                  <div style={{ display: 'grid', gap: '1rem' }}>
-                    <div>
-                      <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 500 }}>
-                        English Name
-                      </label>
-                      <input
-                        type="text"
-                        value={area.nameEn}
-                        onChange={(e) => updateArea(area.id, 'nameEn', e.target.value)}
-                        style={{ width: '100%', padding: '0.5rem', fontSize: '1rem' }}
-                      />
+                  <div className={areaStyles.editForm}>
+                    <div className={areaStyles.editHeader}>
+                      <h3 className={areaStyles.editTitle}>Edit Area</h3>
                     </div>
-                    <div>
-                      <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 500 }}>
-                        Lao Name
-                      </label>
-                      <input
-                        type="text"
-                        value={area.nameLo}
-                        onChange={(e) => updateArea(area.id, 'nameLo', e.target.value)}
-                        style={{ width: '100%', padding: '0.5rem', fontSize: '1rem' }}
-                      />
-                    </div>
-                    <div>
-                      <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 500 }}>
-                        Chinese Name
-                      </label>
-                      <input
-                        type="text"
-                        value={area.nameZh}
-                        onChange={(e) => updateArea(area.id, 'nameZh', e.target.value)}
-                        style={{ width: '100%', padding: '0.5rem', fontSize: '1rem' }}
-                      />
-                    </div>
-                    <div>
-                      <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 500 }}>
-                        Order
-                      </label>
-                      <input
-                        type="number"
-                        value={area.order}
-                        onChange={(e) => updateArea(area.id, 'order', parseInt(e.target.value) || 0)}
-                        style={{ width: '100%', padding: '0.5rem', fontSize: '1rem' }}
-                      />
-                    </div>
-                    <div>
-                      <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    <div className={areaStyles.formGrid}>
+                      <div className={areaStyles.formGroup}>
+                        <label className={areaStyles.label}>English Name</label>
                         <input
-                          type="checkbox"
-                          checked={area.active}
-                          onChange={(e) => updateArea(area.id, 'active', e.target.checked)}
+                          type="text"
+                          value={area.nameEn}
+                          onChange={(e) => updateArea(area.id, 'nameEn', e.target.value)}
+                          className={areaStyles.input}
                         />
-                        Active
-                      </label>
+                      </div>
+                      <div className={areaStyles.formGroup}>
+                        <label className={areaStyles.label}>Lao Name</label>
+                        <input
+                          type="text"
+                          value={area.nameLo}
+                          onChange={(e) => updateArea(area.id, 'nameLo', e.target.value)}
+                          className={areaStyles.input}
+                        />
+                      </div>
+                      <div className={areaStyles.formGroup}>
+                        <label className={areaStyles.label}>Chinese Name</label>
+                        <input
+                          type="text"
+                          value={area.nameZh}
+                          onChange={(e) => updateArea(area.id, 'nameZh', e.target.value)}
+                          className={areaStyles.input}
+                        />
+                      </div>
+                      <div className={areaStyles.formGroup}>
+                        <label className={areaStyles.label}>Display Order</label>
+                        <input
+                          type="number"
+                          value={area.order}
+                          onChange={(e) => updateArea(area.id, 'order', parseInt(e.target.value) || 0)}
+                          className={areaStyles.input}
+                          min="0"
+                        />
+                      </div>
+                      <div className={areaStyles.formGroup}>
+                        <label className={areaStyles.checkboxLabel}>
+                          <input
+                            type="checkbox"
+                            checked={area.active}
+                            onChange={(e) => updateArea(area.id, 'active', e.target.checked)}
+                            className={areaStyles.checkbox}
+                          />
+                          <span>Active</span>
+                        </label>
+                      </div>
                     </div>
-                    <div style={{ display: 'flex', gap: '0.5rem' }}>
-                      <button onClick={() => handleUpdate(area)} className={styles.btn}>
-                        Save
+                    <div className={areaStyles.formActions}>
+                      <button onClick={() => handleUpdate(area)} className={areaStyles.btnPrimary}>
+                        ✓ Save Changes
                       </button>
-                      <button onClick={handleCancelEdit} className={styles.btn}>
+                      <button onClick={handleCancelEdit} className={areaStyles.btnSecondary}>
                         Cancel
                       </button>
                     </div>
                   </div>
                 ) : (
                   <>
-                    <div className={styles.recordTop}>
-                      <div>
-                        <h2 className={styles.recordTitle}>{area.nameEn}</h2>
-                        <p className={styles.recordSubtle}>
-                          {area.nameLo} · {area.nameZh}
-                        </p>
-                        <p className={styles.recordMeta}>Slug: {area.slug} · Order: {area.order}</p>
+                    <div className={areaStyles.cardHeader}>
+                      <div className={areaStyles.cardTitleGroup}>
+                        <h3 className={areaStyles.cardTitle}>{area.nameEn}</h3>
+                        <span className={`${styles.pill} ${area.active ? styles.active : styles.inactive}`}>
+                          {area.active ? '✓ Active' : 'Inactive'}
+                        </span>
                       </div>
-                      <span className={`${styles.pill} ${area.active ? styles.active : ''}`}>
-                        {area.active ? 'Active' : 'Inactive'}
-                      </span>
                     </div>
-                    <div style={{ display: 'flex', gap: '0.5rem', marginTop: '1rem' }}>
-                      <button onClick={() => handleEdit(area)} className={styles.btn}>
-                        Edit
+                    <div className={areaStyles.cardBody}>
+                      <div className={areaStyles.langRow}>
+                        <span className={areaStyles.langLabel}>🇱🇦 Lao:</span>
+                        <span className={areaStyles.langValue}>{area.nameLo}</span>
+                      </div>
+                      <div className={areaStyles.langRow}>
+                        <span className={areaStyles.langLabel}>🇨🇳 Chinese:</span>
+                        <span className={areaStyles.langValue}>{area.nameZh}</span>
+                      </div>
+                      <div className={areaStyles.metaRow}>
+                        <div className={areaStyles.metaItem}>
+                          <span className={areaStyles.metaLabel}>Slug:</span>
+                          <code className={areaStyles.metaCode}>{area.slug}</code>
+                        </div>
+                        <div className={areaStyles.metaItem}>
+                          <span className={areaStyles.metaLabel}>Order:</span>
+                          <span className={areaStyles.metaValue}>{area.order}</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div className={areaStyles.cardActions}>
+                      <button onClick={() => handleEdit(area)} className={areaStyles.btnEdit}>
+                        ✏️ Edit
                       </button>
                       <button
                         onClick={() => handleDelete(area.id)}
-                        className={styles.btn}
-                        style={{ background: '#dc2626' }}
+                        className={areaStyles.btnDelete}
                       >
-                        Delete
+                        🗑️ Delete
                       </button>
                     </div>
                   </>

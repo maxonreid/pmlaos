@@ -71,15 +71,6 @@ export default async function AdminDashboardPage() {
           </Link>
         </section>
 
-        <section className={styles.infoSection}>
-          <div className={styles.infoCard}>
-            <span className={styles.infoIcon}>ℹ️</span>
-            <div className={styles.infoContent}>
-              <h3 className={styles.infoTitle}>Mobile Optimized</h3>
-              <p className={styles.infoText}>This dashboard is optimized for mobile use. Use the bottom navigation for quick access to main features.</p>
-            </div>
-          </div>
-        </section>
       </div>
     </AdminLayout>
   )

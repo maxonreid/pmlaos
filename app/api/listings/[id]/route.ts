@@ -43,6 +43,8 @@ export async function PUT(
         transaction: data.transaction,
         status: data.status,
         featured: data.featured,
+        sponsored: data.sponsored,
+        sponsoredUntil: data.sponsoredUntil ? new Date(data.sponsoredUntil) : null,
         areaId: data.areaId ?? null,
         titleEn: data.titleEn,
         titleLo: data.titleEn,

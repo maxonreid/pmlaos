@@ -14,6 +14,8 @@ type ListingSummary = {
   transaction: string
   status: string
   featured: boolean
+  sponsored: boolean
+  sponsoredUntil?: string | null
   area?: string | null
   price: string | number
   priceUnit: string
@@ -49,6 +51,8 @@ type FormValues = {
   transaction: string
   status: string
   featured: boolean
+  sponsored: boolean
+  sponsoredUntil: string
   area: string
   price: string
   priceUnit: string
@@ -75,6 +79,8 @@ const EMPTY_FORM: FormValues = {
   transaction: 'sale',
   status: 'available',
   featured: false,
+  sponsored: false,
+  sponsoredUntil: '',
   area: '',
   price: '',
   priceUnit: 'total',
@@ -101,6 +107,8 @@ function toFormValues(listing: ListingDetail): FormValues {
     transaction: listing.transaction ?? 'sale',
     status: listing.status ?? 'available',
     featured: Boolean(listing.featured),
+    sponsored: Boolean(listing.sponsored),
+    sponsoredUntil: listing.sponsoredUntil ? listing.sponsoredUntil.split('T')[0] : '',
     area: listing.area ?? '',
     price: toInputValue(listing.price),
     priceUnit: listing.priceUnit ?? 'total',
@@ -444,6 +452,8 @@ export default function ListingsManager({ canDelete, initialListings = [], useLo
         transaction: payload.transaction,
         status: payload.status,
         featured: payload.featured,
+        sponsored: payload.sponsored,
+        sponsoredUntil: payload.sponsoredUntil || null,
         area: payload.area,
         price: payload.price,
         priceUnit: payload.priceUnit,
@@ -1055,6 +1065,35 @@ export default function ListingsManager({ canDelete, initialListings = [], useLo
                   />
                   <span>Show as featured property</span>
                 </label>
+              </div>
+
+              <div className={`${styles.field} ${styles.checkboxField}`} style={{ backgroundColor: '#fff3cd', padding: '16px', borderRadius: '8px', border: '2px solid #ff6b35' }}>
+                <span className={styles.label} style={{ fontSize: '16px', fontWeight: 'bold', color: '#d63384' }}>🎯 SPONSORED (Premium Homepage)</span>
+                <label className={styles.checkbox}>
+                  <input
+                    type="checkbox"
+                    checked={formValues.sponsored}
+                    onChange={(event) => updateField('sponsored', event.target.checked)}
+                  />
+                  <span style={{ fontWeight: 'bold' }}>Display as SPONSORED banner on homepage</span>
+                </label>
+                {formValues.sponsored && (
+                  <div style={{ marginTop: '12px' }}>
+                    <label style={{ display: 'block', marginBottom: '4px', fontSize: '14px', fontWeight: '500' }}>
+                      Sponsored Until (optional):
+                    </label>
+                    <input
+                      type="date"
+                      className={styles.input}
+                      value={formValues.sponsoredUntil}
+                      onChange={(event) => updateField('sponsoredUntil', event.target.value)}
+                      style={{ maxWidth: '200px' }}
+                    />
+                    <p style={{ fontSize: '12px', color: '#6c757d', marginTop: '4px' }}>
+                      Leave empty for unlimited. Most recent sponsored listing will be shown.
+                    </p>
+                  </div>
+                )}
               </div>
             </div>
 

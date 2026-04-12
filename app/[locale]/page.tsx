@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
 import ListingCard from '@/components/public/ListingCard/ListingCard'
-import { getFeaturedListings, type PublicListing } from '@/lib/listingsPublic'
+import { getFeaturedListings, getSponsoredListing, type PublicListing } from '@/lib/listingsPublic'
 import styles from './page.module.css'
 
 type HomePageProps = {
@@ -48,6 +48,7 @@ export default async function HomePage({ params }: HomePageProps) {
 
   const t = await getTranslations()
   const featured = await getFeaturedListings()
+  const sponsoredListing = await getSponsoredListing()
   const heroListing = featured[0]
   const promo = getPromoContent(locale)
 
@@ -91,55 +92,59 @@ export default async function HomePage({ params }: HomePageProps) {
 
 
 
-      <section className={styles.section}>
-        <div className={styles.container}>
-          <div className={styles.sponsoredBanner}>
-            <div
-              className={styles.sponsoredMedia}
-              style={{ backgroundImage: `linear-gradient(135deg, rgba(8, 17, 41, 0.2), rgba(8, 17, 41, 0.78)), url(${promo.image})` }}
-            />
-            <div className={styles.sponsoredContent}>
-              <span className={styles.sponsoredBadge}>{t('home.promoEyebrow')}</span>
-              <h2 className={styles.sponsoredTitle}>{t('home.promoTitle')}</h2>
-              <p className={styles.sponsoredText}>{t('home.promoBody')}</p>
-              <div className={styles.sponsoredMetaRow}>
-                <span>{t('home.promoMeta1')}</span>
-                <span>{t('home.promoMeta2')}</span>
-                <span>{t('home.promoMeta3')}</span>
+      {sponsoredListing && (
+        <section className={styles.section}>
+          <div className={styles.container}>
+            <div className={styles.sponsoredBanner}>
+              <div
+                className={styles.sponsoredMedia}
+                style={{ backgroundImage: `linear-gradient(135deg, rgba(8, 17, 41, 0.2), rgba(8, 17, 41, 0.78)), url(${sponsoredListing.photos[0] || promo.image})` }}
+              />
+              <div className={styles.sponsoredContent}>
+                <span className={styles.sponsoredBadge}>🎯 {t('home.promoEyebrow')}</span>
+                <h2 className={styles.sponsoredTitle}>{sponsoredListing.titleEn}</h2>
+                <p className={styles.sponsoredText}>{sponsoredListing.descriptionEn.substring(0, 150)}...</p>
+                <div className={styles.sponsoredMetaRow}>
+                  <span>{sponsoredListing.locationEn}</span>
+                  {sponsoredListing.bedrooms && <span>{sponsoredListing.bedrooms} beds</span>}
+                  {sponsoredListing.areaSqm && <span>{sponsoredListing.areaSqm} m²</span>}
+                </div>
+                <Link href={`/${locale}/listings/${sponsoredListing.slug}`} className={styles.sponsoredCta}>
+                  {t('home.promoCta')}
+                </Link>
               </div>
-              <Link href={promo.href} className={styles.sponsoredCta}>
-                {t('home.promoCta')}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {featured.length > 0 && (
+        <section className={styles.section}>
+          <div className={styles.container}>
+            <div className={styles.sectionHead}>
+              <div>
+                <p className={styles.sectionEyebrow}>{t('home.featuredEyebrow')}</p>
+                <h2 className={styles.sectionTitle}>{t('home.featured')}</h2>
+              </div>
+              <Link href={`/${locale}/listings`} className={styles.sectionLink}>
+                {t('home.browseAll')} →
               </Link>
             </div>
-          </div>
-        </div>
-      </section>
-
-      <section className={styles.section}>
-        <div className={styles.container}>
-          <div className={styles.sectionHead}>
-            <div>
-              <p className={styles.sectionEyebrow}>{t('home.featuredEyebrow')}</p>
-              <h2 className={styles.sectionTitle}>{t('home.featured')}</h2>
+            <div className={styles.grid}>
+              {featured.map((listing) => (
+                <ListingCard
+                  key={listing.id}
+                  listing={listing}
+                  locale={locale}
+                  typeLabel={getListingTypeLabel(t, listing)}
+                  areaLabel={t('listing.area')}
+                  sqmLabel={t('listing.sqm')}
+                />
+              ))}
             </div>
-            <Link href={`/${locale}/listings`} className={styles.sectionLink}>
-              {t('home.browseAll')} →
-            </Link>
           </div>
-          <div className={styles.grid}>
-            {featured.map((listing) => (
-              <ListingCard
-                key={listing.id}
-                listing={listing}
-                locale={locale}
-                typeLabel={getListingTypeLabel(t, listing)}
-                areaLabel={t('listing.area')}
-                sqmLabel={t('listing.sqm')}
-              />
-            ))}
-          </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       <section className={`${styles.section} ${styles.sectionAlt}`}>
         <div className={styles.container}>

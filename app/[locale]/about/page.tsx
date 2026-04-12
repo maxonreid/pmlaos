@@ -4,14 +4,16 @@ import styles from './page.module.css'
 
 const team = [
   {
-    name: 'Phonesavanh Keovongsa',
-    role: 'Principal Agent',
-    photo: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&q=80',
+    name: 'Ping Silavong',
+    role: 'Real Estate Agent',
+    photo: '/img/team/ping-silavong.jpg',
+    bio: 'Ping is a local real estate agent based in Vientiane, specializing in helping clients find houses, apartments, and land for sale or rent. She works closely with each client to understand their needs and provide honest guidance throughout the process. Her focus is on building trust and making every transaction simple and smooth.',
   },
   {
-    name: 'Manivone Phommachak',
-    role: 'Senior Agent',
-    photo: 'https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=400&q=80',
+    name: 'Maximiliano Brito Torres',
+    role: 'Technology & Web Development',
+    photo: '/img/team/maximiliano-brito-torres.jpg',
+    bio: 'Maximiliano is responsible for the technology behind the platform, ensuring a modern and efficient property search experience. He develops and manages the website, helping clients easily browse listings, access information, and connect quickly and easily. His goal is to bring a more transparent and professional approach to real estate.',
   },
 ]
 
@@ -65,15 +67,16 @@ export default async function AboutPage({
       {/* Team */}
       <section className={styles.section}>
         <div className={styles.container}>
-          <h2 className={styles.sectionTitle}>{t('teamTitle')}</h2>
+          <h2 className={styles.sectionTitle}>Meet the Team</h2>
           <div className={styles.teamGrid}>
-            {team.map(({ name, role, photo }) => (
+            {team.map(({ name, role, photo, bio }) => (
               <div key={name} className={styles.teamCard}>
                 <div className={styles.teamPhoto}>
                   <Image src={photo} alt={name} fill style={{ objectFit: 'cover' }} />
                 </div>
                 <h3 className={styles.teamName}>{name}</h3>
                 <p className={styles.teamRole}>{role}</p>
+                <p className={styles.teamBio}>{bio}</p>
               </div>
             ))}
           </div>

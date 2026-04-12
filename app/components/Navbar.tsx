@@ -1,5 +1,10 @@
+'use client'
+
+import { useState } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import styles from './Navbar.module.css'
+import InstallPWA from '@/components/shared/InstallPWA'
 
 interface Props {
   locale: string
@@ -30,6 +35,7 @@ const nextLocaleMap: Record<string, { locale: string; label: string }> = {
 }
 
 export default function Navbar({ locale }: Props) {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const navLinks = links[locale as keyof typeof links] ?? links.en
   const next = nextLocaleMap[locale] ?? nextLocaleMap.en
 
@@ -37,32 +43,14 @@ export default function Navbar({ locale }: Props) {
     <header className={styles.header}>
       <nav className={styles.nav}>
         <Link href={`/${locale}`} className={styles.logo}>
-          <svg
+          <Image
+            src="/img/pmlaos-logo-no-bg.png"
+            alt="PM Real Estate"
+            width={38}
+            height={44}
             className={styles.logoMark}
-            viewBox="0 0 38 44"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-            aria-label="PM Real Estate"
-            role="img"
-          >
-            <path
-              d="M19 2L4 8v14c0 10 6.5 18.4 15 20.8C28.5 40.4 35 32 35 22V8L19 2z"
-              fill="#132240"
-              stroke="#C9A84C"
-              strokeWidth="1.5"
-            />
-            <text
-              x="19"
-              y="22"
-              textAnchor="middle"
-              fontFamily="Cormorant Garamond, serif"
-              fontSize="14"
-              fontWeight="600"
-              fill="#C9A84C"
-            >
-              PM
-            </text>
-          </svg>
+            priority
+          />
         </Link>
 
         <ul className={styles.links}>
@@ -75,10 +63,42 @@ export default function Navbar({ locale }: Props) {
           ))}
         </ul>
 
-        <Link href={`/${next.locale}`} className={styles.langSwitch}>
-          {next.label}
-        </Link>
+        <div className={styles.navActions}>
+          <InstallPWA />
+          <Link href={`/${next.locale}`} className={styles.langSwitch}>
+            {next.label}
+          </Link>
+          
+          <button
+            className={styles.hamburger}
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            aria-label="Toggle menu"
+            aria-expanded={mobileMenuOpen}
+          >
+            <span className={styles.hamburgerLine}></span>
+            <span className={styles.hamburgerLine}></span>
+            <span className={styles.hamburgerLine}></span>
+          </button>
+        </div>
       </nav>
+
+      {mobileMenuOpen && (
+        <div className={styles.mobileMenu}>
+          <ul className={styles.mobileLinks}>
+            {navLinks.map(({ href, label }) => (
+              <li key={href}>
+                <Link
+                  href={`/${locale}/${href}`}
+                  className={styles.mobileLink}
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  {label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
     </header>
   )
 }

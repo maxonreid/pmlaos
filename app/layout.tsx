@@ -14,6 +14,18 @@ export const metadata: Metadata = {
     statusBarStyle: 'default',
     title: 'PM Laos',
   },
+  openGraph: {
+    title: 'PM Real Estate',
+    description: 'Property listings in Vientiane, Laos',
+    images: ['/og-image.jpg'],
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'PM Real Estate',
+    description: 'Property listings in Vientiane, Laos',
+    images: ['/og-image.jpg'],
+  },
 }
 
 export const viewport: Viewport = {
@@ -27,7 +39,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html suppressHydrationWarning>
       <head>
-        <link rel="apple-touch-icon" href="/icon-192x192.svg" />
+        <link rel="apple-touch-icon" href="/icon-192x192.png" />
       </head>
       <body className={inter.className}>
         <PWAInstaller />

@@ -3,8 +3,8 @@ const CACHE_NAME = 'pmlaos-v1';
 const urlsToCache = [
   '/',
   '/manifest.json',
-  '/icon-192x192.svg',
-  '/icon-512x512.svg',
+  '/icon-192x192.png',
+  '/icon-512x512.png',
 ];
 
 // Install event - cache resources

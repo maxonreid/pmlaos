@@ -10,6 +10,12 @@
   gap: 1rem;
 }
 
+@media (min-width: 900px) {
+  .quickLinksGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
 .quickLink {
   background: #fff;
   border: 1px solid #e5e7eb;

@@ -1,5 +1,6 @@
 import { getTranslations, setRequestLocale } from 'next-intl/server'
 import WhatsAppButton from '@/components/public/WhatsAppButton/WhatsAppButton'
+import LocationMap from '@/components/public/LocationMap/LocationMap'
 import styles from './page.module.css'
 
 export default async function ContactPage({
@@ -39,6 +40,11 @@ export default async function ContactPage({
               <h2 className={styles.infoTitle}>{t('contact.whatsappLabel')}</h2>
               <WhatsAppButton label={t('listing.whatsapp')} />
             </div>
+          </div>
+
+          <div className={styles.mapSection}>
+            <h2 className={styles.mapTitle}>{t('contact.mapTitle')}</h2>
+            <LocationMap latitude={17.9757} longitude={102.6331} />
           </div>
         </div>
       </div>
