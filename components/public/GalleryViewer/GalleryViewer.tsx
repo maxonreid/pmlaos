@@ -92,32 +92,34 @@ export default function GalleryViewer({ photos, alt }: Props) {
           aria-label="Photo viewer"
         >
           <div className={styles.lightbox}>
-            <button className={styles.closeBtn} onClick={close} aria-label="Close">
+            <button className={styles.closeBtn} onClick={(e) => { e.stopPropagation(); close(); }} aria-label="Close">
               ×
             </button>
-            <div className={styles.imageWrap} onClick={e => e.stopPropagation()}>
-              <Image
-                src={photos[lightboxIndex]}
-                alt={`${alt} photo ${lightboxIndex + 1}`}
-                fill
-                sizes="90vw"
-                unoptimized
-                style={{ objectFit: 'contain' }}
-                priority
-              />
+            <div className={styles.imageWrap} onClick={(e) => e.stopPropagation()}>
+              <div style={{ position: 'relative', width: '100%', height: '100%' }}>
+                <Image
+                  src={photos[lightboxIndex]}
+                  alt={`${alt} photo ${lightboxIndex + 1}`}
+                  fill
+                  sizes="90vw"
+                  unoptimized
+                  style={{ objectFit: 'contain' }}
+                  priority
+                />
+              </div>
             </div>
             {photos.length > 1 && (
               <>
                 <button
                   className={`${styles.navBtn} ${styles.navPrev}`}
-                  onClick={e => { e.stopPropagation(); prev(); }}
+                  onClick={(e) => { e.stopPropagation(); prev(); }}
                   aria-label="Previous photo"
                 >
                   ‹
                 </button>
                 <button
                   className={`${styles.navBtn} ${styles.navNext}`}
-                  onClick={e => { e.stopPropagation(); next(); }}
+                  onClick={(e) => { e.stopPropagation(); next(); }}
                   aria-label="Next photo"
                 >
                   ›

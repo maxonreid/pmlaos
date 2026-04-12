@@ -116,8 +116,12 @@
 
 .imageWrap {
   position: relative;
-  width: 100%;
-  height: 100%;
+  width: 90vw;
+  height: 86vh;
+}
+
+.imageWrap > div {
+  pointer-events: none;
 }
 
 .closeBtn {
@@ -132,10 +136,23 @@
   padding: 0.25rem 0.5rem;
   cursor: pointer;
   transition: color 0.15s;
+  pointer-events: auto;
+  z-index: 10;
 }
 
 .closeBtn:hover {
   color: #fff;
+}
+
+@media (max-width: 640px) {
+  .closeBtn {
+    top: 1rem;
+    right: 1rem;
+    font-size: 3.5rem;
+    padding: 0.5rem 1rem;
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 8px;
+  }
 }
 
 .navBtn {
@@ -158,6 +175,7 @@
   transition: all var(--transition);
   line-height: 1;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  pointer-events: auto;
 }
 
 .navBtn:hover {
@@ -202,4 +220,5 @@
   font-size: 0.875rem;
   font-weight: 500;
   white-space: nowrap;
+  pointer-events: none;
 }
