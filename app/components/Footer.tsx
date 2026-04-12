@@ -54,7 +54,7 @@ export default function Footer({ locale }: Props) {
               <p className={styles.contactItem}>
                 <span className={styles.contactIcon}>✉️</span>
                 <a href="mailto:contact@pmlaos.com" className={styles.emailLink}>
-                  contact@pmlaos.com
+                  contact@PMLaos.com
                 </a>
               </p>
             </div>

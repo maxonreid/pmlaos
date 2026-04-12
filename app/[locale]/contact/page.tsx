@@ -44,7 +44,7 @@ export default async function ContactPage({
             <div className={styles.infoBlock}>
               <h2 className={styles.infoTitle}>{t('contact.emailLabel')}</h2>
               <a href="mailto:contact@pmlaos.com" className={styles.emailLink}>
-                contact@pmlaos.com
+                contact@PMLaos.com
               </a>
             </div>
           </div>

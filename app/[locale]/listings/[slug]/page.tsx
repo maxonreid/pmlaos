@@ -56,44 +56,52 @@ export default async function ListingDetailPage({
 
   const keyFacts = [
     listing.category !== 'land' && listing.bedrooms
-      ? { label: t('listing.bedrooms'), value: String(listing.bedrooms) }
+      ? { label: t('listing.bedrooms'), value: String(listing.bedrooms), icon: '🛏️' }
       : null,
     listing.category !== 'land' && listing.bathrooms
-      ? { label: t('listing.bathrooms'), value: String(listing.bathrooms) }
+      ? { label: t('listing.bathrooms'), value: String(listing.bathrooms), icon: '🚿' }
       : null,
     listing.category !== 'land' && listing.parkingAvailable
-      ? { label: t('listing.parking'), value: t('listing.parkingYes') }
+      ? { label: t('listing.parking'), value: t('listing.parkingYes'), icon: '🚗' }
+      : null,
+    listing.category !== 'land' && listing.swimmingPool
+      ? { label: t('listing.amenityPool'), value: t('listing.parkingYes'), icon: '🏊' }
       : null,
     listing.areaSqm
-      ? { label: t('listing.area'), value: `${listing.areaSqm} ${t('listing.sqm')}` }
+      ? { label: t('listing.area'), value: `${listing.areaSqm} ${t('listing.sqm')}`, icon: '📐' }
       : null,
-    { label: t('listing.location'), value: listing.locationEn },
-  ].filter((item): item is { label: string; value: string } => item !== null)
+    { label: t('listing.location'), value: listing.locationEn, icon: '📍' },
+  ].filter((item): item is { label: string; value: string; icon: string } => item !== null)
 
-  const amenityLabels: Record<string, string> = {
-    pool: t('listing.amenityPool'),
-    gym: t('listing.amenityGym'),
-    garden: t('listing.amenityGarden'),
-    security: t('listing.amenitySecurity'),
-    balcony: t('listing.amenityBalcony'),
-    terrace: t('listing.amenityTerrace'),
-    furnished: t('listing.amenityFurnished'),
-    pet_friendly: t('listing.amenityPetFriendly'),
-    wifi: t('listing.amenityWifi'),
-    cleaning_service: t('listing.amenityCleaningService'),
-    air_conditioning: t('listing.amenityAirConditioning'),
-    parking: t('listing.amenityParking'),
-    garage: t('listing.amenityGarage'),
-    smart_home: t('listing.amenitySmartHome'),
-    river_view: t('listing.amenityRiverView'),
-    office_space: t('listing.amenityOfficeSpace'),
-    gated_compound: t('listing.amenityGatedCompound'),
-    title_deed: t('listing.amenityTitleDeed'),
-    road_frontage: t('listing.amenityRoadFrontage'),
-    utilities: t('listing.amenityUtilities'),
+  const amenityLabels: Record<string, { label: string; icon: string }> = {
+    pool: { label: t('listing.amenityPool'), icon: '🏊' },
+    gym: { label: t('listing.amenityGym'), icon: '💪' },
+    garden: { label: t('listing.amenityGarden'), icon: '🌳' },
+    security: { label: t('listing.amenitySecurity'), icon: '🔒' },
+    balcony: { label: t('listing.amenityBalcony'), icon: '🏙️' },
+    terrace: { label: t('listing.amenityTerrace'), icon: '🌅' },
+    furnished: { label: t('listing.amenityFurnished'), icon: '🛋️' },
+    pet_friendly: { label: t('listing.amenityPetFriendly'), icon: '🐾' },
+    wifi: { label: t('listing.amenityWifi'), icon: '📶' },
+    cleaning_service: { label: t('listing.amenityCleaningService'), icon: '🧹' },
+    air_conditioning: { label: t('listing.amenityAirConditioning'), icon: '❄️' },
+    parking: { label: t('listing.amenityParking'), icon: '🅿️' },
+    garage: { label: t('listing.amenityGarage'), icon: '🚪' },
+    smart_home: { label: t('listing.amenitySmartHome'), icon: '🏠' },
+    river_view: { label: t('listing.amenityRiverView'), icon: '🌊' },
+    office_space: { label: t('listing.amenityOfficeSpace'), icon: '💼' },
+    gated_compound: { label: t('listing.amenityGatedCompound'), icon: '🚧' },
+    title_deed: { label: t('listing.amenityTitleDeed'), icon: '📜' },
+    road_frontage: { label: t('listing.amenityRoadFrontage'), icon: '🛣️' },
+    utilities: { label: t('listing.amenityUtilities'), icon: '⚡' },
   }
 
   const amenityItems = listing.amenities.map((amenity) => amenityLabels[amenity]).filter(Boolean)
+  
+  // Add swimming pool to amenities if it's a dedicated field and not in amenities array
+  if (listing.swimmingPool && !listing.amenities.includes('pool')) {
+    amenityItems.unshift(amenityLabels['pool'])
+  }
 
   return (
     <div className={styles.page}>
@@ -166,8 +174,11 @@ export default async function ListingDetailPage({
                   <div className={styles.factGrid}>
                     {keyFacts.map((fact) => (
                       <div key={fact.label} className={styles.factCard}>
-                        <span className={styles.factLabel}>{fact.label}</span>
-                        <span className={styles.factValue}>{fact.value}</span>
+                        <span className={styles.factIcon}>{fact.icon}</span>
+                        <div className={styles.factContent}>
+                          <span className={styles.factLabel}>{fact.label}</span>
+                          <span className={styles.factValue}>{fact.value}</span>
+                        </div>
                       </div>
                     ))}
                   </div>
@@ -178,9 +189,10 @@ export default async function ListingDetailPage({
                 <div className={styles.amenitiesSection}>
                   <h2 className={styles.sectionTitle}>{t('listing.amenities')}</h2>
                   <div className={styles.amenityList}>
-                    {amenityItems.map((amenity) => (
-                      <span key={amenity} className={styles.amenityChip}>
-                        {amenity}
+                    {amenityItems.map((amenity, index) => (
+                      <span key={`${amenity.label}-${index}`} className={styles.amenityChip}>
+                        <span className={styles.amenityIcon}>{amenity.icon}</span>
+                        <span>{amenity.label}</span>
                       </span>
                     ))}
                   </div>

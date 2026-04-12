@@ -142,8 +142,9 @@
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(8px);
+  border: 2px solid rgba(255, 255, 255, 0.4);
   color: #fff;
   font-size: 1.75rem;
   width: 3rem;
@@ -154,12 +155,15 @@
   justify-content: center;
   cursor: pointer;
   z-index: 1;
-  transition: background var(--transition);
+  transition: all var(--transition);
   line-height: 1;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
 .navBtn:hover {
-  background: rgba(255, 255, 255, 0.22);
+  background: rgba(255, 255, 255, 0.35);
+  border-color: rgba(255, 255, 255, 0.6);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
 }
 
 .navPrev {
@@ -171,8 +175,21 @@
 }
 
 @media (max-width: 640px) {
-  .navPrev { left: 0.5rem; }
-  .navNext { right: 0.5rem; }
+  .navPrev { 
+    left: 0.75rem;
+  }
+  .navNext { 
+    right: 0.75rem;
+  }
+  .navBtn {
+    width: 3.5rem;
+    height: 3.5rem;
+    font-size: 2rem;
+    background: rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(10px);
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+  }
   .lightbox { width: 100vw; height: 90vh; }
 }
 

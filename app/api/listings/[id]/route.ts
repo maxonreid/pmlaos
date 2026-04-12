@@ -13,7 +13,16 @@ export async function GET(
   const { id } = await params
   const listing = await prisma.listing.findUnique({
     where: { id },
-    include: { photos: { orderBy: { order: 'asc' } } },
+    include: {
+      photos: { orderBy: { order: 'asc' } },
+      area: {
+        select: {
+          id: true,
+          nameEn: true,
+          slug: true,
+        },
+      },
+    },
   })
 
   if (!listing) return jsonError('Not found', 404)
@@ -35,6 +44,17 @@ export async function PUT(
   }
   const data = validation.data
 
+  // Find area by name to get areaId
+  let areaId = data.areaId
+  if (!areaId && data.locationEn) {
+    const area = await prisma.area.findFirst({
+      where: { nameEn: data.locationEn },
+    })
+    if (area) {
+      areaId = area.id
+    }
+  }
+
   try {
     const listing = await prisma.listing.update({
       where: { id },
@@ -45,7 +65,7 @@ export async function PUT(
         featured: data.featured,
         sponsored: data.sponsored,
         sponsoredUntil: data.sponsoredUntil ? new Date(data.sponsoredUntil) : null,
-        areaId: data.areaId ?? null,
+        areaId: areaId ?? null,
         titleEn: data.titleEn,
         titleLo: data.titleEn,
         titleZh: data.titleEn,
