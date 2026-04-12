@@ -37,8 +37,10 @@ export async function POST(req: NextRequest) {
 
   const body = await req.json()
 
+  const normalizedEmail = body.email.toLowerCase()
+
   const existingUser = await prisma.user.findUnique({
-    where: { email: body.email },
+    where: { email: normalizedEmail },
   })
 
   if (existingUser) {
@@ -52,7 +54,7 @@ export async function POST(req: NextRequest) {
 
   const user = await prisma.user.create({
     data: {
-      email: body.email,
+      email: normalizedEmail,
       name: body.name,
       role: body.role ?? 'agent',
       active: body.active ?? true,

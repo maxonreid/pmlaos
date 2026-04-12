@@ -27,7 +27,7 @@ export async function PATCH(
   } = {}
 
   if (body.name !== undefined) updateData.name = body.name
-  if (body.email !== undefined) updateData.email = body.email
+  if (body.email !== undefined) updateData.email = body.email.toLowerCase()
   if (body.role !== undefined) updateData.role = body.role as 'admin' | 'agent'
   if (body.active !== undefined) updateData.active = body.active
   

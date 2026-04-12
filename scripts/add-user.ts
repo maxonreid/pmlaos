@@ -26,12 +26,14 @@ async function addUser() {
   }
 
   try {
+    const normalizedEmail = email.toLowerCase()
+    
     const existingUser = await prisma.user.findUnique({
-      where: { email },
+      where: { email: normalizedEmail },
     })
 
     if (existingUser) {
-      console.log(`⚠️  User already exists: ${email}`)
+      console.log(`⚠️  User already exists: ${normalizedEmail}`)
       console.log(`   Name: ${existingUser.name}`)
       console.log(`   Role: ${existingUser.role}`)
       console.log(`   Active: ${existingUser.active}`)
@@ -40,7 +42,7 @@ async function addUser() {
 
     const user = await prisma.user.create({
       data: {
-        email,
+        email: normalizedEmail,
         name,
         role: (role as 'agent' | 'admin') || 'agent',
         active: true,
