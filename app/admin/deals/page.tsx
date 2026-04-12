@@ -8,6 +8,7 @@ export default async function AdminDealsPage() {
   const user = {
     name: session?.user?.name ?? 'Admin',
     role: ((session?.user as { role?: string } | undefined)?.role ?? 'admin'),
+    image: session?.user?.image,
   }
 
   const dealsRaw = await prisma.deal.findMany({

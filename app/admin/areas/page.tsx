@@ -13,6 +13,7 @@ export default async function AdminAreasPage() {
   const user = {
     name: session.user.name || 'Admin',
     role: (session.user as { role?: string }).role || 'admin',
+    image: session.user.image,
   }
 
   return (

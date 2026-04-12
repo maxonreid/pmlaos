@@ -7,6 +7,7 @@ export default async function AdminListingsPage() {
   const user = {
     name: session?.user?.name ?? 'Admin',
     role: ((session?.user as { role?: string } | undefined)?.role ?? 'agent'),
+    image: session?.user?.image,
   }
 
   return (

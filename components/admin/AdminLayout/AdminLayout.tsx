@@ -113,6 +113,7 @@ interface AdminLayoutProps {
   user: {
     name: string
     role: string
+    image?: string | null
   }
   pageTitle: string
   pageDescription?: string
@@ -252,7 +253,13 @@ export default function AdminLayout({ children, user, pageTitle, pageDescription
             <span className={styles.navText}>{footerNavItem.label}</span>
           </Link>
           <div className={styles.userInfo}>
-            <div className={styles.avatar}>{getInitials(user.name)}</div>
+            <div className={styles.avatar}>
+              {user.image ? (
+                <img src={user.image} alt={user.name} className={styles.avatarImage} />
+              ) : (
+                getInitials(user.name)
+              )}
+            </div>
             <div className={styles.userDetails}>
               <p className={styles.userName}>{user.name}</p>
               <p className={styles.userRole}>{user.role}</p>

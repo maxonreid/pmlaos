@@ -33,9 +33,23 @@ export default async function AdminUsersPage() {
           {users.map((systemUser) => (
             <article key={systemUser.id} className={styles.recordCard}>
               <div className={styles.recordTop}>
-                <div>
-                  <h2 className={styles.recordTitle}>{systemUser.name}</h2>
-                  <p className={styles.recordSubtle}>{systemUser.email}</p>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                  {systemUser.image && (
+                    <img 
+                      src={systemUser.image} 
+                      alt={systemUser.name}
+                      style={{ 
+                        width: '40px', 
+                        height: '40px', 
+                        borderRadius: '50%',
+                        objectFit: 'cover'
+                      }}
+                    />
+                  )}
+                  <div>
+                    <h2 className={styles.recordTitle}>{systemUser.name}</h2>
+                    <p className={styles.recordSubtle}>{systemUser.email}</p>
+                  </div>
                 </div>
                 <span className={`${styles.pill} ${styles.active}`}>active</span>
               </div>

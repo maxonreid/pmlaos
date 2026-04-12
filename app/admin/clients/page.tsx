@@ -9,6 +9,7 @@ export default async function AdminClientsPage() {
   const user = {
     name: session?.user?.name ?? 'Admin',
     role: ((session?.user as { role?: string } | undefined)?.role ?? 'session required'),
+    image: session?.user?.image,
   }
 
   const clientsRaw = await prisma.client.findMany({
