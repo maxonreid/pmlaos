@@ -29,7 +29,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   session: { strategy: 'jwt' },
   pages: { signIn: '/admin/login' },
   callbacks: {
-    async signIn({ user, account }) {
+    async signIn({ user, account, profile }) {
       if (account?.provider === 'google') {
         const existingUser = await prisma.user.findUnique({
           where: { email: user.email! },
@@ -41,6 +41,34 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         
         if (!existingUser.active) {
           return '/admin/login?error=inactive'
+        }
+
+        // Check if Account link exists, if not create it
+        const existingAccount = await prisma.account.findUnique({
+          where: {
+            provider_providerAccountId: {
+              provider: account.provider,
+              providerAccountId: account.providerAccountId,
+            },
+          },
+        })
+
+        if (!existingAccount) {
+          await prisma.account.create({
+            data: {
+              userId: existingUser.id,
+              type: account.type,
+              provider: account.provider,
+              providerAccountId: account.providerAccountId,
+              refresh_token: account.refresh_token as string | null,
+              access_token: account.access_token as string | null,
+              expires_at: account.expires_at as number | null,
+              token_type: account.token_type as string | null,
+              scope: account.scope as string | null,
+              id_token: account.id_token as string | null,
+              session_state: account.session_state as string | null,
+            },
+          })
         }
       }
       return true

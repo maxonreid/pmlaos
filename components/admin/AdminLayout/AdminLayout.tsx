@@ -244,14 +244,16 @@ export default function AdminLayout({ children, user, pageTitle, pageDescription
         </nav>
 
         <div className={styles.footer}>
-          <Link
-            href={footerNavItem.href}
-            className={`${styles.navLink} ${styles.footerNavLink} ${isActiveRoute(footerNavItem.href) ? styles.active : ''}`}
-            onClick={closeMobileSidebar}
-          >
-            <span className={styles.navIcon}>{footerNavItem.icon}</span>
-            <span className={styles.navText}>{footerNavItem.label}</span>
-          </Link>
+          {user.role === 'admin' && (
+            <Link
+              href={footerNavItem.href}
+              className={`${styles.navLink} ${styles.footerNavLink} ${isActiveRoute(footerNavItem.href) ? styles.active : ''}`}
+              onClick={closeMobileSidebar}
+            >
+              <span className={styles.navIcon}>{footerNavItem.icon}</span>
+              <span className={styles.navText}>{footerNavItem.label}</span>
+            </Link>
+          )}
           <div className={styles.userInfo}>
             <div className={styles.avatar}>
               {user.image ? (

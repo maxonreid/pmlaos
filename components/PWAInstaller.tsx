@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { usePathname } from 'next/navigation'
 
 interface BeforeInstallPromptEvent extends Event {
   prompt: () => Promise<void>
@@ -8,10 +9,13 @@ interface BeforeInstallPromptEvent extends Event {
 }
 
 export default function PWAInstaller() {
+  const pathname = usePathname()
   const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null)
   const [showInstallButton, setShowInstallButton] = useState(false)
   const [showUpdateBanner, setShowUpdateBanner] = useState(false)
   const [isOnline, setIsOnline] = useState(true)
+
+  const isAdminPage = pathname?.startsWith('/admin')
 
   useEffect(() => {
     // Service Worker registration
@@ -200,7 +204,7 @@ export default function PWAInstaller() {
       )}
 
       {/* Install button */}
-      {showInstallButton && (
+      {showInstallButton && !isAdminPage && (
         <div
           style={{
             position: 'fixed',
