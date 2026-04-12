@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation'
 import GalleryViewer from '@/components/public/GalleryViewer/GalleryViewer'
 import LocationMap from '@/components/shared/LocationMap/LocationMap'
 import WhatsAppButton from '@/components/public/WhatsAppButton/WhatsAppButton'
+import ShareButton from '@/components/public/ShareButton/ShareButton'
 import { getListingBySlug, getAllPublicSlugs, formatPrice } from '@/lib/listingsPublic'
 import styles from './page.module.css'
 
@@ -122,17 +123,20 @@ export default async function ListingDetailPage({
       <div className={styles.identityStrip}>
         <div className={styles.container}>
           <div className={styles.badgeRow}>
-            <span className={`${styles.badge} ${styles[`badge_category_${listing.category}`]}`}>
-              {categoryLabel}
-            </span>
-            <span className={`${styles.badge} ${styles[`badge_transaction_${listing.transaction}`]}`}>
-              {transactionLabel}
-            </span>
-            {statusLabel && (
-              <span className={`${styles.badge} ${styles[`badge_status_${listing.status}`]}`}>
-                {statusLabel}
+            <div className={styles.badgeGroup}>
+              <span className={`${styles.badge} ${styles[`badge_category_${listing.category}`]}`}>
+                {categoryLabel}
               </span>
-            )}
+              <span className={`${styles.badge} ${styles[`badge_transaction_${listing.transaction}`]}`}>
+                {transactionLabel}
+              </span>
+              {statusLabel && (
+                <span className={`${styles.badge} ${styles[`badge_status_${listing.status}`]}`}>
+                  {statusLabel}
+                </span>
+              )}
+            </div>
+            <ShareButton title={listing.titleEn} />
           </div>
           <h1 className={styles.title}>{listing.titleEn}</h1>
           <div className={styles.identityMeta}>
@@ -203,7 +207,9 @@ export default async function ListingDetailPage({
               <div className={styles.descSection}>
                 <h2 className={styles.sectionTitle}>{t('listing.description')}</h2>
                 <div className={styles.descBody}>
-                  <p className={styles.desc}>{listing.descriptionEn}</p>
+                  {listing.descriptionEn.split('\n').map((paragraph, idx) => (
+                    paragraph.trim() && <p key={idx} className={styles.desc}>{paragraph}</p>
+                  ))}
                 </div>
               </div>
 
@@ -256,6 +262,21 @@ export default async function ListingDetailPage({
             </aside>
 
           </div>
+        </div>
+      </div>
+
+      {/* Mobile sticky bottom bar */}
+      <div className={styles.mobileBottomBar}>
+        <div className={styles.mobileBarContent}>
+          <div className={styles.mobileBarPrice}>
+            <span className={styles.mobileBarPriceLabel}>Price</span>
+            <span className={styles.mobileBarPriceValue}>{formatPrice(listing.price, listing.priceUnit)}</span>
+          </div>
+          <WhatsAppButton
+            label={t('listing.whatsapp')}
+            listingTitle={listing.titleEn}
+            className={styles.mobileBarButton}
+          />
         </div>
       </div>
 

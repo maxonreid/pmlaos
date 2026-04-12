@@ -2,11 +2,20 @@
 
 import { useState } from 'react'
 import { useTranslations } from 'next-intl'
+import { usePathname } from 'next/navigation'
 import styles from './WhatsAppWidget.module.css'
 
 export default function WhatsAppWidget() {
   const [isHovered, setIsHovered] = useState(false)
   const t = useTranslations('whatsapp')
+  const pathname = usePathname()
+  
+  // Hide widget on individual listing pages
+  const isListingDetailPage = pathname ? /\/listings\/[^/]+$/.test(pathname) : false
+  
+  if (isListingDetailPage) {
+    return null
+  }
   
   const phoneNumber = '8562099935869'
   const message = encodeURIComponent(t('defaultMessage'))

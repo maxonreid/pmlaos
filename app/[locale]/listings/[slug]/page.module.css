@@ -1,5 +1,6 @@
 .page {
   padding: 0;
+  position: relative;
 }
 
 .container {
@@ -39,9 +40,17 @@
 
 .badgeRow {
   display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.badgeGroup {
+  display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
-  margin-bottom: 1rem;
 }
 
 .badge {
@@ -180,26 +189,47 @@
 .factsSection,
 .amenitiesSection {
   margin-bottom: 2.5rem;
+  animation: fadeUp 0.5s ease both;
 }
+
+.factsSection { animation-delay: 0.1s; }
+.amenitiesSection { animation-delay: 0.2s; }
+.descSection { animation-delay: 0.3s; }
+.mapSection { animation-delay: 0.4s; }
 
 .factGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 0.75rem;
 }
 
 .factCard {
   display: flex;
   align-items: center;
-  gap: 0.875rem;
-  padding: 1rem 1.125rem;
+  gap: 0.625rem;
+  padding: 0.75rem 0.875rem;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
   background: linear-gradient(180deg, #fff 0%, #f8f4ec 100%);
+  transition: all 0.3s ease;
+  animation: fadeUp 0.4s ease both;
+}
+
+.factCard:nth-child(1) { animation-delay: 0.1s; }
+.factCard:nth-child(2) { animation-delay: 0.15s; }
+.factCard:nth-child(3) { animation-delay: 0.2s; }
+.factCard:nth-child(4) { animation-delay: 0.25s; }
+.factCard:nth-child(5) { animation-delay: 0.3s; }
+.factCard:nth-child(6) { animation-delay: 0.35s; }
+
+.factCard:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(13, 27, 62, 0.08);
+  border-color: var(--color-accent);
 }
 
 .factIcon {
-  font-size: 1.5rem;
+  font-size: 1.25rem;
   flex-shrink: 0;
   line-height: 1;
 }
@@ -207,48 +237,55 @@
 .factContent {
   display: flex;
   flex-direction: column;
-  gap: 0.45rem;
+  gap: 0.25rem;
   flex: 1;
   min-width: 0;
 }
 
 .factLabel {
-  font-size: 0.75rem;
+  font-size: 0.6875rem;
   font-weight: 700;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--color-text-muted);
 }
 
 .factValue {
-  font-size: 1.0625rem;
+  font-size: 0.9375rem;
   font-weight: 700;
   color: var(--color-primary);
-  line-height: 1.4;
+  line-height: 1.3;
 }
 
 .amenityList {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.75rem;
+  gap: 0.625rem;
 }
 
 .amenityChip {
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
-  min-height: 2.5rem;
-  padding: 0.7rem 1rem;
+  gap: 0.4rem;
+  min-height: 2.25rem;
+  padding: 0.5rem 0.875rem;
   border-radius: 999px;
   background: #f4ede0;
   border: 1px solid #e6dac2;
   color: var(--color-primary);
-  font-size: 0.875rem;
+  font-size: 0.8125rem;
   font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.amenityChip:hover {
+  background: #ede3d2;
+  border-color: #d8c9a8;
+  transform: translateY(-1px);
 }
 
 .amenityIcon {
-  font-size: 1.125rem;
+  font-size: 1rem;
   line-height: 1;
 }
 
@@ -279,6 +316,11 @@
   font-size: 0.9375rem;
   color: var(--color-text);
   line-height: 1.8;
+  margin-bottom: 0.875rem;
+}
+
+.desc:last-child {
+  margin-bottom: 0;
 }
 
 /* Map placeholder */
@@ -314,6 +356,12 @@
   gap: 1rem;
   animation: fadeUp 0.5s ease both;
   animation-delay: 0.2s;
+  box-shadow: 0 2px 8px rgba(13, 27, 62, 0.04);
+  transition: box-shadow 0.3s ease;
+}
+
+.sideCard:hover {
+  box-shadow: 0 4px 16px rgba(13, 27, 62, 0.08);
 }
 
 .sidePrice {
@@ -376,8 +424,137 @@
     padding: 2.25rem 1.25rem 4rem;
   }
 
-  .heroFacts,
-  .factGrid {
+  .heroFacts {
     grid-template-columns: 1fr;
+  }
+  
+  .factGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.625rem;
+  }
+  
+  .factCard {
+    padding: 0.625rem 0.75rem;
+    gap: 0.5rem;
+  }
+  
+  .factIcon {
+    font-size: 1.125rem;
+  }
+  
+  .factLabel {
+    font-size: 0.625rem;
+  }
+  
+  .factValue {
+    font-size: 0.875rem;
+  }
+  
+  .amenityList {
+    gap: 0.5rem;
+  }
+  
+  .amenityChip {
+    min-height: 2rem;
+    padding: 0.4rem 0.75rem;
+    font-size: 0.75rem;
+    gap: 0.35rem;
+  }
+  
+  .amenityIcon {
+    font-size: 0.9375rem;
+  }
+  
+  .pageBody {
+    padding-bottom: 6rem;
+  }
+}
+
+/* ── Mobile sticky bottom bar ─────────────────────────── */
+.mobileBottomBar {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--color-white);
+  border-top: 1px solid var(--color-border);
+  box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.08);
+  z-index: 100;
+  animation: slideUp 0.3s ease both;
+}
+
+@media (max-width: 900px) {
+  .mobileBottomBar {
+    display: block;
+  }
+}
+
+.mobileBarContent {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.875rem 1.25rem;
+  max-width: var(--max-width);
+  margin: 0 auto;
+}
+
+.mobileBarPrice {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+}
+
+.mobileBarPriceLabel {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.mobileBarPriceValue {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  line-height: 1.2;
+}
+
+.mobileBarButton {
+  flex-shrink: 0;
+  padding: 0.75rem 1.5rem !important;
+  font-size: 0.9375rem !important;
+}
+
+/* ── Animations ───────────────────────────────────────── */
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
   }
 }

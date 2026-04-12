@@ -166,18 +166,16 @@ export default async function ListingsPage({
       active: pill.cat === category,
     }))
 
-  // Area filtering temporarily disabled during migration to dynamic area model
-  const mapAreas: { slug: string; label: string; count: number; href: string; active: boolean }[] = []
-  // const mapAreas = areas.map((area) => {
-  //   const areaCount = baseResults.filter((listing) => listing.areaSlug === area.slug).length
-  //   return {
-  //     slug: area.slug,
-  //     label: area.nameEn,
-  //     count: areaCount,
-  //     href: buildListingsHref(locale, { transaction, category, query, areaSlug: area.slug, ...adv }),
-  //     active: area.slug === areaSlug,
-  //   }
-  // })
+  const mapAreas = areas.map((area) => {
+    const areaCount = baseResults.filter((listing) => listing.areaSlug === area.slug).length
+    return {
+      slug: area.slug,
+      label: area.nameEn,
+      count: areaCount,
+      href: buildListingsHref(locale, { transaction, category, query, areaSlug: area.slug, ...adv }),
+      active: area.slug === areaSlug,
+    }
+  })
 
   const allAreasHref = buildListingsHref(locale, { transaction, category, query, ...adv })
 

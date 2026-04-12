@@ -1,0 +1,45 @@
+.shareButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.875rem;
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 8px;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  backdrop-filter: blur(8px);
+}
+
+.shareButton:hover {
+  background: rgba(255, 255, 255, 0.25);
+  border-color: rgba(255, 255, 255, 0.4);
+  transform: translateY(-1px);
+}
+
+.shareButton:active {
+  transform: translateY(0);
+}
+
+.shareButton svg {
+  flex-shrink: 0;
+}
+
+.shareLabel {
+  white-space: nowrap;
+}
+
+@media (max-width: 640px) {
+  .shareLabel {
+    display: none;
+  }
+  
+  .shareButton {
+    padding: 0.5rem;
+    min-width: 2.5rem;
+    justify-content: center;
+  }
+}
