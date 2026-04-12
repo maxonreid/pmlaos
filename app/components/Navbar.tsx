@@ -5,7 +5,6 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { useTranslations } from 'next-intl'
 import styles from './Navbar.module.css'
-import InstallPWA from '@/components/shared/InstallPWA'
 
 interface Props {
   locale: string
@@ -53,7 +52,6 @@ export default function Navbar({ locale }: Props) {
         </ul>
 
         <div className={styles.navActions}>
-          <InstallPWA />
           <Link href={`/${next.locale}`} className={styles.langSwitch}>
             {next.label}
           </Link>

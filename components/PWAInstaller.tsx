@@ -204,7 +204,7 @@ export default function PWAInstaller() {
         <div
           style={{
             position: 'fixed',
-            bottom: 20,
+            bottom: 100,
             right: 20,
             zIndex: 9998,
           }}
