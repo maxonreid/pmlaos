@@ -22,7 +22,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         if (!user.password) return null
         const valid = await bcrypt.compare(credentials.password as string, user.password)
         if (!valid) return null
-        return { id: user.id, name: user.name, email: user.email, role: user.role }
+        return { id: user.id, name: user.name, email: user.email, role: user.role, image: user.image }
       },
     }),
   ],
@@ -76,16 +76,23 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     async jwt({ token, user }) {
       if (user) {
         token.role = (user as { role: string }).role
+        if (user.image) token.picture = user.image
       } else if (token.email) {
         const dbUser = await prisma.user.findUnique({
           where: { email: token.email.toLowerCase() },
         })
-        if (dbUser) token.role = dbUser.role
+        if (dbUser) {
+          token.role = dbUser.role
+          if (dbUser.image) token.picture = dbUser.image
+        }
       }
       return token
     },
     session({ session, token }) {
-      if (session.user) (session.user as { role?: string }).role = token.role as string
+      if (session.user) {
+        (session.user as { role?: string }).role = token.role as string
+        if (token.picture) session.user.image = token.picture as string
+      }
       return session
     },
   },

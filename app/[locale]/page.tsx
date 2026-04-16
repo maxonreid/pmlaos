@@ -93,7 +93,7 @@ export default async function HomePage({ params }: HomePageProps) {
                 <h2 className={styles.sponsoredTitle}>{sponsoredListing.titleEn}</h2>
                 <p className={styles.sponsoredText}>{sponsoredListing.descriptionEn.substring(0, 150)}...</p>
                 <div className={styles.sponsoredMetaRow}>
-                  <span>{sponsoredListing.locationEn}</span>
+                  <span>{sponsoredListing.villageName}</span>
                   {sponsoredListing.bedrooms && <span>{sponsoredListing.bedrooms} beds</span>}
                   {sponsoredListing.areaSqm && <span>{sponsoredListing.areaSqm} m²</span>}
                 </div>

@@ -51,6 +51,7 @@ export default function GalleryViewer({ photos, alt }: Props) {
             alt={alt}
             fill
             priority
+            loading="eager"
             unoptimized
             sizes="(max-width: 640px) 100vw, 66vw"
             style={{ objectFit: 'cover' }}

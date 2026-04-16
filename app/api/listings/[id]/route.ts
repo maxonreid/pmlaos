@@ -15,7 +15,7 @@ export async function GET(
     where: { id },
     include: {
       photos: { orderBy: { order: 'asc' } },
-      area: {
+      village: {
         select: {
           id: true,
           nameEn: true,
@@ -44,17 +44,6 @@ export async function PUT(
   }
   const data = validation.data
 
-  // Find area by name to get areaId
-  let areaId = data.areaId
-  if (!areaId && data.locationEn) {
-    const area = await prisma.area.findFirst({
-      where: { nameEn: data.locationEn },
-    })
-    if (area) {
-      areaId = area.id
-    }
-  }
-
   try {
     const listing = await prisma.listing.update({
       where: { id },
@@ -65,16 +54,14 @@ export async function PUT(
         featured: data.featured,
         sponsored: data.sponsored,
         sponsoredUntil: data.sponsoredUntil ? new Date(data.sponsoredUntil) : null,
-        areaId: areaId ?? null,
+        villageId: data.villageId ?? null,
+        district: data.district,
         titleEn: data.titleEn,
         titleLo: data.titleEn,
         titleZh: data.titleEn,
         descriptionEn: data.descriptionEn,
         descriptionLo: data.descriptionEn,
         descriptionZh: data.descriptionEn,
-        locationEn: data.locationEn,
-        locationLo: data.locationEn,
-        locationZh: data.locationEn,
         price: data.price,
         priceUnit: data.priceUnit,
         areaSqm: data.areaSqm,
@@ -114,7 +101,10 @@ export async function DELETE(
   try {
     await prisma.listing.delete({ where: { id } })
     return NextResponse.json({ ok: true })
-  } catch {
-    return jsonError('Listing not found.', 404)
+  } catch (err) {
+    if (err instanceof Error && err.message.includes('Record to delete does not exist')) {
+      return jsonError('Listing not found.', 404)
+    }
+    return jsonError('Unable to delete listing.', 500)
   }
 }

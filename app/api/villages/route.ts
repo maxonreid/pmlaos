@@ -13,10 +13,10 @@ function generateSlug(name: string): string {
 }
 
 export async function GET() {
-  const areas = await prisma.area.findMany({
+  const villages = await prisma.village.findMany({
     orderBy: { order: 'asc' },
   })
-  return NextResponse.json(areas)
+  return NextResponse.json(villages)
 }
 
 export async function POST(req: NextRequest) {
@@ -37,18 +37,18 @@ export async function POST(req: NextRequest) {
 
   const slug = customSlug?.trim() || generateSlug(nameEn)
 
-  const existing = await prisma.area.findUnique({
+  const existing = await prisma.village.findUnique({
     where: { slug },
   })
 
   if (existing) {
     return NextResponse.json(
-      { error: 'Area with this slug already exists' },
+      { error: 'Village with this slug already exists' },
       { status: 400 }
     )
   }
 
-  const area = await prisma.area.create({
+  const village = await prisma.village.create({
     data: {
       nameEn,
       nameLo,
@@ -59,5 +59,5 @@ export async function POST(req: NextRequest) {
     },
   })
 
-  return NextResponse.json(area, { status: 201 })
+  return NextResponse.json(village, { status: 201 })
 }

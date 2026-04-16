@@ -321,7 +321,8 @@
 }
 
 .pill,
-.featuredPill {
+.featuredPill,
+.sponsoredPill {
   display: inline-flex;
   align-items: center;
   border-radius: 999px;
@@ -334,6 +335,11 @@
 .featuredPill {
   background: rgba(245, 158, 11, 0.16);
   color: #b45309;
+}
+
+.sponsoredPill {
+  background: rgba(214, 51, 132, 0.12);
+  color: #9d174d;
 }
 
 .available {
@@ -565,6 +571,7 @@
 .photoPreview {
   display: block;
   width: 100%;
+  height: auto;
   aspect-ratio: 1 / 1;
   object-fit: cover;
   background: #f8fafc;

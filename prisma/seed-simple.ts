@@ -33,16 +33,16 @@ async function main() {
     },
   })
 
-  for (const area of defaultAreas) {
-    await prisma.area.upsert({
-      where: { slug: area.slug },
+  for (const village of defaultAreas) {
+    await prisma.village.upsert({
+      where: { slug: village.slug },
       update: {},
-      create: area,
+      create: village,
     })
   }
 
   console.log('Seeded admin user: admin@pmlaos.com / changeme')
-  console.log(`Seeded ${defaultAreas.length} areas`)
+  console.log(`Seeded ${defaultAreas.length} villages`)
 }
 
 main()

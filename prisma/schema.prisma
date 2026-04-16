@@ -73,7 +73,7 @@ enum ClientLanguage {
   other
 }
 
-model Area {
+model Village {
   id        String    @id @default(uuid())
   nameEn    String    @unique
   nameLo    String
@@ -129,17 +129,15 @@ model Listing {
   /// 🎯 SPONSORED: Premium homepage placement - highly visible promotional banner
   sponsored        Boolean          @default(false)
   sponsoredUntil   DateTime?
-  areaId           String?
-  area             Area?            @relation(fields: [areaId], references: [id])
+  villageId        String?
+  village          Village?         @relation(fields: [villageId], references: [id])
   titleEn          String
   titleLo          String
   titleZh          String
   descriptionEn    String           @db.Text
   descriptionLo    String           @db.Text
   descriptionZh    String           @db.Text
-  locationEn       String
-  locationLo       String
-  locationZh       String
+  district         String?
   price            Decimal          @db.Decimal(12, 2)
   priceUnit        PriceUnit        @default(total)
   areaSqm          Decimal?         @db.Decimal(10, 2)
@@ -219,7 +217,7 @@ model Deal {
   clientId        String
   client          Client          @relation(fields: [clientId], references: [id])
   listingId       String
-  listing         Listing         @relation(fields: [listingId], references: [id])
+  listing         Listing         @relation(fields: [listingId], references: [id], onDelete: Cascade)
   transactionType TransactionType
   dealValue       Float
   commission      Float

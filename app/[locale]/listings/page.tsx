@@ -85,7 +85,7 @@ export default async function ListingsPage({
 
   const validCategories: PropertyCategory[] = ['house', 'apartment', 'land']
   const validTransactions: TransactionType[] = ['sale', 'rent']
-  const areas = await prisma.area.findMany({ where: { active: true }, orderBy: { order: 'asc' } })
+  const areas = await prisma.village.findMany({ where: { active: true }, orderBy: { order: 'asc' } })
   const validAreaSlugs = areas.map(a => a.slug)
 
   const category = validCategories.includes(rawCategory as PropertyCategory)

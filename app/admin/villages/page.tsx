@@ -1,11 +1,11 @@
 import AdminLayout from '@/components/admin/AdminLayout/AdminLayout'
 import { auth } from '@/lib/auth'
 import { redirect } from 'next/navigation'
-import AreasManagementClient from './AreasManagementClient'
+import VillagesManagementClient from './VillagesManagementClient'
 
-export default async function AdminAreasPage() {
+export default async function AdminVillagesPage() {
   const session = await auth()
-  
+
   if (!session?.user) {
     redirect('/admin/login')
   }
@@ -19,10 +19,10 @@ export default async function AdminAreasPage() {
   return (
     <AdminLayout
       user={user}
-      pageTitle="Areas"
-      pageDescription="Manage geographic areas for property listings."
+      pageTitle="Villages"
+      pageDescription="Manage villages for property listings."
     >
-      <AreasManagementClient />
+      <VillagesManagementClient />
     </AdminLayout>
   )
 }

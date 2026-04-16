@@ -12,6 +12,8 @@ export default async function AdminDashboardPage() {
     redirect('/admin/login')
   }
 
+  console.log('Session user:', JSON.stringify(session.user, null, 2))
+
   const user = {
     name: session.user.name || 'Admin',
     role: (session.user as { role?: string }).role || 'admin',
@@ -62,10 +64,10 @@ export default async function AdminDashboardPage() {
             <span className={styles.quickArrow}>→</span>
           </Link>
 
-          <Link href="/admin/areas" className={styles.quickLink}>
+          <Link href="/admin/villages" className={styles.quickLink}>
             <span className={styles.quickIcon}>📍</span>
             <div className={styles.quickContent}>
-              <span className={styles.quickTitle}>Areas</span>
+              <span className={styles.quickTitle}>Villages</span>
               <span className={styles.quickMeta}>Manage locations</span>
             </div>
             <span className={styles.quickArrow}>→</span>

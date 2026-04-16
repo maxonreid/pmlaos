@@ -9,7 +9,7 @@ export type PublicListing = {
   status: 'available' | 'sold' | 'rented' | 'hidden'
   featured: boolean
   titleEn: string
-  locationEn: string
+  villageName: string | null
   descriptionEn: string
   price: number
   priceUnit: 'total' | 'per_month'
@@ -43,13 +43,12 @@ export type PublicFilters = {
 function mapListing(raw: {
   id: string
   slug: string
-  area: { slug: string } | null
+  village: { slug: string; nameEn: string } | null
   category: string
   transaction: string
   status: string
   featured: boolean
   titleEn: string
-  locationEn: string
   descriptionEn: string
   price: { toNumber(): number } | number
   priceUnit: string
@@ -66,13 +65,13 @@ function mapListing(raw: {
   return {
     id: raw.id,
     slug: raw.slug,
-    areaSlug: raw.area?.slug ?? null,
+    areaSlug: raw.village?.slug ?? null,
     category: raw.category as PublicListing['category'],
     transaction: raw.transaction as PublicListing['transaction'],
     status: raw.status as PublicListing['status'],
     featured: raw.featured,
     titleEn: raw.titleEn,
-    locationEn: raw.locationEn,
+    villageName: raw.village?.nameEn ?? null,
     descriptionEn: raw.descriptionEn,
     price: typeof raw.price === 'number' ? raw.price : raw.price.toNumber(),
     priceUnit: raw.priceUnit as PublicListing['priceUnit'],
@@ -91,13 +90,12 @@ function mapListing(raw: {
 const LISTING_SELECT = {
   id: true,
   slug: true,
-  area: { select: { slug: true } },
+  village: { select: { slug: true, nameEn: true } },
   category: true,
   transaction: true,
   status: true,
   featured: true,
   titleEn: true,
-  locationEn: true,
   descriptionEn: true,
   price: true,
   priceUnit: true,
@@ -120,12 +118,12 @@ export async function getPublicListings(filters: PublicFilters = {}): Promise<Pu
       status: 'available',
       ...(category ? { category } : {}),
       ...(transaction ? { transaction } : {}),
-      ...(areaSlug ? { area: { slug: areaSlug } } : {}),
+      ...(areaSlug ? { village: { slug: areaSlug } } : {}),
       ...(query
         ? {
             OR: [
               { titleEn: { contains: query, mode: 'insensitive' } },
-              { locationEn: { contains: query, mode: 'insensitive' } },
+              { village: { nameEn: { contains: query, mode: 'insensitive' } } },
               { descriptionEn: { contains: query, mode: 'insensitive' } },
             ],
           }

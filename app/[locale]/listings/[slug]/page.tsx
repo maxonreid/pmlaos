@@ -71,7 +71,7 @@ export default async function ListingDetailPage({
     listing.areaSqm
       ? { label: t('listing.area'), value: `${listing.areaSqm} ${t('listing.sqm')}`, icon: '📐' }
       : null,
-    { label: t('listing.location'), value: listing.locationEn, icon: '📍' },
+    { label: t('listing.location'), value: listing.villageName ?? '', icon: '📍' },
   ].filter((item): item is { label: string; value: string; icon: string } => item !== null)
 
   const amenityLabels: Record<string, { label: string; icon: string }> = {
@@ -142,7 +142,7 @@ export default async function ListingDetailPage({
           <div className={styles.identityMeta}>
             <span className={styles.price}>{formatPrice(listing.price, listing.priceUnit)}</span>
             <span className={styles.metaDivider} />
-            <span className={styles.metaItem}>{listing.locationEn}</span>
+            <span className={styles.metaItem}>{listing.villageName}</span>
             {primaryAreaSqm && (
               <>
                 <span className={styles.metaDivider} />

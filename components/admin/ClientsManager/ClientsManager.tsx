@@ -167,6 +167,7 @@ export default function ClientsManager({
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({})
   const [clientPendingDelete, setClientPendingDelete] = useState<ClientRecord | null>(null)
   const [dealClient, setDealClient] = useState<ClientRecord | null>(null)
+  const [apiError, setApiError] = useState<string | null>(null)
   
   const listingOptions = listings.map(l => ({
     id: l.id,
@@ -258,7 +259,7 @@ export default function ClientsManager({
     setPropertySearch('')
   }
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
 
     const nextFieldErrors: Record<string, string> = {}
@@ -285,8 +286,7 @@ export default function ClientsManager({
       (u) => u.name.toLowerCase() === formValues.assignedToName.trim().toLowerCase()
     )?.id ?? null
 
-    const nextClient: ClientRecord = {
-      id: editingId ?? `client-${crypto.randomUUID()}`,
+    const body = {
       name: formValues.name.trim(),
       whatsapp: formValues.whatsapp.trim(),
       email: formValues.email.trim() || null,
@@ -298,34 +298,89 @@ export default function ClientsManager({
       status: formValues.status,
       source: formValues.source,
       notes: formValues.notes.trim() || null,
-      interestedPropertyIds: [...formValues.interestedProperties],
-      assignedToId: resolvedAssignedToId,
+      assignedTo: resolvedAssignedToId,
       speakLaoThai: formValues.speakLaoThai,
       speakEnglish: formValues.speakEnglish,
-      createdAt:
-        editingId
-          ? clients.find((client) => client.id === editingId)?.createdAt ?? new Date().toISOString()
-          : new Date().toISOString(),
+      interestedPropertyIds: formValues.interestedProperties,
     }
 
-    setClients((current) => {
-      const exists = current.some((client) => client.id === nextClient.id)
-      const next = exists
-        ? current.map((client) => (client.id === nextClient.id ? nextClient : client))
-        : [...current, nextClient]
-      return sortClients(next)
-    })
+    try {
+      const res = editingId
+        ? await fetch(`/api/clients/${editingId}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(body),
+          })
+        : await fetch('/api/clients', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(body),
+          })
 
-    closeForm()
+      if (!res.ok) {
+        setApiError('Failed to save client. Please try again.')
+        return
+      }
+
+      const saved = await res.json()
+
+      const nextClient: ClientRecord = {
+        id: saved.id,
+        name: body.name,
+        whatsapp: body.whatsapp,
+        email: body.email,
+        nationality: body.nationality,
+        gender: body.gender,
+        interestType: body.interestType,
+        budgetMin: body.budgetMin,
+        budgetMax: body.budgetMax,
+        status: body.status,
+        source: body.source,
+        notes: body.notes,
+        interestedPropertyIds: [...formValues.interestedProperties],
+        assignedToId: resolvedAssignedToId,
+        speakLaoThai: body.speakLaoThai,
+        speakEnglish: body.speakEnglish,
+        createdAt: saved.createdAt,
+      }
+
+      setClients((current) => {
+        const exists = current.some((client) => client.id === nextClient.id)
+        const next = exists
+          ? current.map((client) => (client.id === nextClient.id ? nextClient : client))
+          : [...current, nextClient]
+        return sortClients(next)
+      })
+
+      setApiError(null)
+      closeForm()
+    } catch {
+      setApiError('Network error. Please try again.')
+    }
   }
 
-  const handleDelete = (client: ClientRecord) => {
-    setClients((current) => current.filter((item) => item.id !== client.id))
-    closeDeleteModal()
+  const handleDelete = async (client: ClientRecord) => {
+    try {
+      const res = await fetch(`/api/clients/${client.id}`, { method: 'DELETE' })
+      if (!res.ok) {
+        setApiError('Failed to delete client. Please try again.')
+        closeDeleteModal()
+        return
+      }
+      setClients((current) => current.filter((item) => item.id !== client.id))
+      closeDeleteModal()
+    } catch {
+      setApiError('Network error. Please try again.')
+      closeDeleteModal()
+    }
   }
 
   return (
     <div className={styles.stack}>
+      {apiError ? (
+        <p className={`${styles.fieldError} ${styles.errorBanner}`} role="alert">{apiError}</p>
+      ) : null}
+
       {mode === 'list' ? (
         <section className={styles.stack}>
           <div className={styles.toolbar}>
@@ -736,7 +791,7 @@ export default function ClientsManager({
             <p className={styles.modalEyebrow}>Delete client</p>
             <h2 id="delete-client-title" className={styles.modalTitle}>{clientPendingDelete.name}</h2>
             <p className={styles.modalText}>
-              This removes the client from the local preview list only. This action cannot be undone.
+              This permanently deletes the client from the database. This action cannot be undone.
             </p>
             <div className={styles.modalActions}>
               <button type="button" className={styles.secondaryButton} onClick={closeDeleteModal}>

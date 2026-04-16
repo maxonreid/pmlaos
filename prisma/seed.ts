@@ -131,11 +131,11 @@ async function main() {
     },
   })
 
-  for (const area of defaultAreas) {
-    await prisma.area.upsert({
-      where: { slug: area.slug },
+  for (const village of defaultAreas) {
+    await prisma.village.upsert({
+      where: { slug: village.slug },
       update: {},
-      create: area,
+      create: village,
     })
   }
 
@@ -154,9 +154,6 @@ async function main() {
         descriptionEn: listing.descriptionEn,
         descriptionLo: listing.descriptionEn,
         descriptionZh: listing.descriptionEn,
-        locationEn: listing.locationEn,
-        locationLo: listing.locationEn,
-        locationZh: listing.locationEn,
         price: listing.price,
         priceUnit: listing.priceUnit,
         areaSqm: listing.areaSqm,
@@ -182,9 +179,6 @@ async function main() {
         descriptionEn: listing.descriptionEn,
         descriptionLo: listing.descriptionEn,
         descriptionZh: listing.descriptionEn,
-        locationEn: listing.locationEn,
-        locationLo: listing.locationEn,
-        locationZh: listing.locationEn,
         price: listing.price,
         priceUnit: listing.priceUnit,
         areaSqm: listing.areaSqm,

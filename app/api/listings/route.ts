@@ -24,14 +24,14 @@ export async function GET() {
       id: true,
       slug: true,
       titleEn: true,
-      locationEn: true,
+      district: true,
       category: true,
       transaction: true,
       status: true,
       featured: true,
       sponsored: true,
       sponsoredUntil: true,
-      area: {
+      village: {
         select: {
           id: true,
           nameEn: true,
@@ -60,17 +60,6 @@ export async function POST(req: NextRequest) {
   }
   const data = validation.data
 
-  // Find area by name to get areaId
-  let areaId = data.areaId
-  if (!areaId && data.locationEn) {
-    const area = await prisma.area.findFirst({
-      where: { nameEn: data.locationEn },
-    })
-    if (area) {
-      areaId = area.id
-    }
-  }
-
   const listing = await prisma.listing.create({
     data: {
       slug: generateSlug(data.titleEn),
@@ -80,16 +69,14 @@ export async function POST(req: NextRequest) {
       featured: data.featured,
       sponsored: data.sponsored,
       sponsoredUntil: data.sponsoredUntil ? new Date(data.sponsoredUntil) : null,
-      areaId: areaId ?? undefined,
+      villageId: data.villageId ?? undefined,
+      district: data.district ?? undefined,
       titleEn: data.titleEn,
       titleLo: data.titleEn,
       titleZh: data.titleEn,
       descriptionEn: data.descriptionEn,
       descriptionLo: data.descriptionEn,
       descriptionZh: data.descriptionEn,
-      locationEn: data.locationEn,
-      locationLo: data.locationEn,
-      locationZh: data.locationEn,
       price: data.price,
       priceUnit: data.priceUnit,
       areaSqm: data.areaSqm,

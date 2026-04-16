@@ -25,25 +25,41 @@ export async function PUT(
   const body = await req.json()
 
   try {
-    const client = await prisma.client.update({
-      where: { id },
-      data: {
-        name: body.name,
-        whatsapp: body.whatsapp,
-        email: body.email ?? null,
-        nationality: body.nationality ?? null,
-        gender: body.gender ?? null,
-        speakLaoThai: body.speakLaoThai ?? false,
-        speakEnglish: body.speakEnglish ?? false,
-        language: body.language ?? 'en',
-        interestType: body.interestType ?? 'any',
-        budgetMin: body.budgetMin ?? null,
-        budgetMax: body.budgetMax ?? null,
-        notes: body.notes ?? null,
-        status: body.status ?? 'new',
-        source: body.source ?? 'direct',
-        assignedTo: body.assignedTo ?? null,
-      },
+    const client = await prisma.$transaction(async (tx) => {
+      const updated = await tx.client.update({
+        where: { id },
+        data: {
+          name: body.name,
+          whatsapp: body.whatsapp,
+          email: body.email ?? null,
+          nationality: body.nationality ?? null,
+          gender: body.gender ?? null,
+          speakLaoThai: body.speakLaoThai ?? false,
+          speakEnglish: body.speakEnglish ?? false,
+          language: body.language ?? 'en',
+          interestType: body.interestType ?? 'any',
+          budgetMin: body.budgetMin ?? null,
+          budgetMax: body.budgetMax ?? null,
+          notes: body.notes ?? null,
+          status: body.status ?? 'new',
+          source: body.source ?? 'direct',
+          assignedTo: body.assignedTo ?? null,
+        },
+      })
+
+      if (Array.isArray(body.interestedPropertyIds)) {
+        await tx.clientListing.deleteMany({ where: { clientId: id } })
+        if (body.interestedPropertyIds.length > 0) {
+          await tx.clientListing.createMany({
+            data: body.interestedPropertyIds.map((listingId: string) => ({
+              clientId: id,
+              listingId,
+            })),
+          })
+        }
+      }
+
+      return updated
     })
     return NextResponse.json(client)
   } catch {

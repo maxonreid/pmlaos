@@ -1,10 +1,9 @@
 'use client'
 
 import Image from 'next/image'
-import { FormEvent, useCallback, useEffect, useRef, useState, useTransition } from 'react'
+import { FormEvent, useCallback, useEffect, useState, useTransition } from 'react'
 import LocationMap from '@/components/shared/LocationMap/LocationMap'
 import styles from './ListingsManager.module.css'
-import 'select2/dist/css/select2.min.css'
 
 // Vientiane districts for the District field
 const VIENTIANE_DISTRICTS = [
@@ -23,18 +22,18 @@ type ListingSummary = {
   id: string
   slug: string
   titleEn: string
-  locationEn: string
+  district?: string | null
+  village?: {
+    id: string
+    nameEn: string
+    slug: string
+  } | null
   category: string
   transaction: string
   status: string
   featured: boolean
   sponsored: boolean
   sponsoredUntil?: string | null
-  area?: {
-    id: string
-    nameEn: string
-    slug: string
-  } | null
   price: string | number
   priceUnit: string
   descriptionEn?: string
@@ -50,6 +49,7 @@ type ListingSummary = {
 
 type ListingDetail = ListingSummary & {
   descriptionEn: string
+  villageId?: string | null
   areaSqm: string | number | null
   bedrooms: number | null
   bathrooms: number | null
@@ -63,14 +63,14 @@ type ListingDetail = ListingSummary & {
 type FormValues = {
   titleEn: string
   descriptionEn: string
-  locationEn: string
+  villageId: string
+  district: string
   category: string
   transaction: string
   status: string
   featured: boolean
   sponsored: boolean
   sponsoredUntil: string
-  area: string
   price: string
   priceUnit: string
   areaSqm: string
@@ -91,14 +91,14 @@ type ApiError = {
 const EMPTY_FORM: FormValues = {
   titleEn: '',
   descriptionEn: '',
-  locationEn: '',
+  villageId: '',
+  district: '',
   category: 'house',
   transaction: 'sale',
   status: 'available',
   featured: false,
   sponsored: false,
   sponsoredUntil: '',
-  area: '',
   price: '',
   priceUnit: 'total',
   areaSqm: '',
@@ -119,14 +119,14 @@ function toFormValues(listing: ListingDetail): FormValues {
   return {
     titleEn: listing.titleEn ?? '',
     descriptionEn: listing.descriptionEn ?? '',
-    locationEn: listing.locationEn ?? '',
+    villageId: listing.village?.id ?? '',
+    district: listing.district ?? '',
     category: listing.category ?? 'house',
     transaction: listing.transaction ?? 'sale',
     status: listing.status ?? 'available',
     featured: Boolean(listing.featured),
     sponsored: Boolean(listing.sponsored),
     sponsoredUntil: listing.sponsoredUntil ? listing.sponsoredUntil.split('T')[0] : '',
-    area: listing.area?.slug ?? '',
     price: toInputValue(listing.price),
     priceUnit: listing.priceUnit ?? 'total',
     areaSqm: toInputValue(listing.areaSqm),
@@ -201,7 +201,7 @@ async function parseApiError(response: Response): Promise<ApiError> {
   }
 }
 
-type Area = {
+type Village = {
   id: string
   nameEn: string
   nameLo: string
@@ -233,7 +233,7 @@ function generateSlug(title: string) {
 
 export default function ListingsManager({ canDelete, initialListings = [], useLocalData = false }: Props) {
   const [listings, setListings] = useState<ListingSummary[]>(() => sortListings(initialListings))
-  const [areas, setAreas] = useState<Area[]>([])
+  const [villages, setVillages] = useState<Village[]>([])
   const [mode, setMode] = useState<'list' | 'create' | 'edit' | 'view'>('list')
   const [formValues, setFormValues] = useState<FormValues>(EMPTY_FORM)
   const [editingId, setEditingId] = useState<string | null>(null)
@@ -250,8 +250,6 @@ export default function ListingsManager({ canDelete, initialListings = [], useLo
   const [manualLocationEnabled, setManualLocationEnabled] = useState(false)
   const [manualCoords, setManualCoords] = useState('')
   const [isPending, startTransition] = useTransition()
-  const locationSelectRef = useRef<HTMLSelectElement>(null)
-  const districtSelectRef = useRef<HTMLSelectElement>(null)
 
   const loadListings = useCallback(async () => {
     if (useLocalData) {
@@ -265,9 +263,9 @@ export default function ListingsManager({ canDelete, initialListings = [], useLo
     setPageError('')
 
     try {
-      const [listingsResponse, areasResponse] = await Promise.all([
+      const [listingsResponse, villagesResponse] = await Promise.all([
         fetch('/api/listings', { cache: 'no-store' }),
-        fetch('/api/areas', { cache: 'no-store' }),
+        fetch('/api/villages', { cache: 'no-store' }),
       ])
 
       if (!listingsResponse.ok) {
@@ -277,9 +275,9 @@ export default function ListingsManager({ canDelete, initialListings = [], useLo
         return
       }
 
-      if (areasResponse.ok) {
-        const areasData = (await areasResponse.json()) as Area[]
-        setAreas(areasData.filter((area) => area.active))
+      if (villagesResponse.ok) {
+        const villagesData = (await villagesResponse.json()) as Village[]
+        setVillages(villagesData.filter((v) => v.active))
       }
 
       const data = (await listingsResponse.json()) as ListingSummary[]
@@ -296,74 +294,6 @@ export default function ListingsManager({ canDelete, initialListings = [], useLo
     void loadListings()
   }, [loadListings])
 
-  // Initialize Select2 for Location and District fields
-  useEffect(() => {
-    if (mode === 'create' || mode === 'edit') {
-      const initSelect2 = async () => {
-        // Dynamically import jQuery and Select2
-        const $ = (await import('jquery')).default
-        await import('select2')
-
-        // Initialize Location select
-        if (locationSelectRef.current) {
-          const $locationSelect = $(locationSelectRef.current)
-          $locationSelect.select2({
-            placeholder: 'Select an area',
-            allowClear: true,
-            width: '100%',
-          })
-          $locationSelect.on('change', function() {
-            updateField('locationEn', $(this).val() as string)
-          })
-        }
-
-        // Initialize District select
-        if (districtSelectRef.current) {
-          const $districtSelect = $(districtSelectRef.current)
-          $districtSelect.select2({
-            placeholder: 'Select a district',
-            allowClear: true,
-            width: '100%',
-          })
-          $districtSelect.on('change', function() {
-            updateField('area', $(this).val() as string)
-          })
-        }
-      }
-
-      void initSelect2()
-
-      // Cleanup
-      return () => {
-        const cleanup = async () => {
-          const $ = (await import('jquery')).default
-          if (locationSelectRef.current) {
-            $(locationSelectRef.current).select2('destroy')
-          }
-          if (districtSelectRef.current) {
-            $(districtSelectRef.current).select2('destroy')
-          }
-        }
-        void cleanup()
-      }
-    }
-  }, [mode])
-
-  // Update Select2 values when formValues change
-  useEffect(() => {
-    if (mode === 'create' || mode === 'edit') {
-      const updateSelect2Values = async () => {
-        const $ = (await import('jquery')).default
-        if (locationSelectRef.current) {
-          $(locationSelectRef.current).val(formValues.locationEn).trigger('change.select2')
-        }
-        if (districtSelectRef.current) {
-          $(districtSelectRef.current).val(formValues.area).trigger('change.select2')
-        }
-      }
-      void updateSelect2Values()
-    }
-  }, [formValues.locationEn, formValues.area, mode])
 
   const updateField = (
     key: keyof FormValues,
@@ -410,7 +340,6 @@ export default function ListingsManager({ canDelete, initialListings = [], useLo
       setFormValues(toFormValues({
         ...localListing,
         descriptionEn: localListing.descriptionEn ?? '',
-        area: localListing.area ?? null,
         areaSqm: localListing.areaSqm ?? null,
         bedrooms: localListing.bedrooms ?? null,
         bathrooms: localListing.bathrooms ?? null,
@@ -469,7 +398,6 @@ export default function ListingsManager({ canDelete, initialListings = [], useLo
       setFormValues(toFormValues({
         ...localListing,
         descriptionEn: localListing.descriptionEn ?? '',
-        area: localListing.area ?? null,
         areaSqm: localListing.areaSqm ?? null,
         bedrooms: localListing.bedrooms ?? null,
         bathrooms: localListing.bathrooms ?? null,
@@ -535,8 +463,8 @@ export default function ListingsManager({ canDelete, initialListings = [], useLo
       ...formValues,
       titleEn: formValues.titleEn.trim(),
       descriptionEn: formValues.descriptionEn.trim(),
-      locationEn: formValues.locationEn.trim(),
-      area: formValues.area || null,
+      villageId: formValues.villageId || null,
+      district: formValues.district || null,
       price: formValues.price.trim(),
       areaSqm: formValues.areaSqm.trim(),
       bedrooms: formValues.bedrooms.trim(),
@@ -549,25 +477,25 @@ export default function ListingsManager({ canDelete, initialListings = [], useLo
     }
 
     if (useLocalData) {
-      // For local data, we need to find the area object by slug
-      const areaObj = payload.area 
-        ? areas.find(a => a.slug === payload.area) || null
+      const villageObj = payload.villageId
+        ? villages.find((v) => v.id === payload.villageId) || null
         : null
-      
+
       const nextListing: ListingDetail = {
         id: editingId ?? `seed-${crypto.randomUUID()}`,
         slug: editingId
           ? (listings.find((listing) => listing.id === editingId)?.slug ?? generateSlug(payload.titleEn))
           : generateSlug(payload.titleEn || 'listing'),
         titleEn: payload.titleEn,
-        locationEn: payload.locationEn,
+        district: payload.district,
+        villageId: payload.villageId,
+        village: villageObj ? { id: villageObj.id, nameEn: villageObj.nameEn, slug: villageObj.slug } : null,
         category: payload.category,
         transaction: payload.transaction,
         status: payload.status,
         featured: payload.featured,
         sponsored: payload.sponsored,
         sponsoredUntil: payload.sponsoredUntil || null,
-        area: areaObj ? { id: areaObj.id, nameEn: areaObj.nameEn, slug: areaObj.slug } : null,
         price: payload.price,
         priceUnit: payload.priceUnit,
         descriptionEn: payload.descriptionEn,
@@ -768,7 +696,7 @@ export default function ListingsManager({ canDelete, initialListings = [], useLo
 
     return [
       listing.titleEn,
-      listing.locationEn,
+      listing.village?.nameEn ?? '',
       listing.descriptionEn ?? '',
     ].some((value) => value.toLowerCase().includes(normalizedSearch))
   })
@@ -898,11 +826,12 @@ export default function ListingsManager({ canDelete, initialListings = [], useLo
                           <span className={styles.transactionPill}>{capitalize(listing.transaction)}</span>
                         </div>
                         <h2 className={styles.recordTitle}>{listing.titleEn}</h2>
-                        <p className={styles.recordSubtle}>{listing.locationEn}</p>
+                        <p className={styles.recordSubtle}>{listing.village?.nameEn ?? ''}</p>
                       </div>
                       <div className={styles.statusStack}>
                         <span className={`${styles.pill} ${styles[listing.status] ?? ''}`}>{capitalize(listing.status)}</span>
                         {listing.featured ? <span className={styles.featuredPill}>Featured</span> : null}
+                        {listing.sponsored ? <span className={styles.sponsoredPill}>Sponsored</span> : null}
                       </div>
                     </div>
 
@@ -995,13 +924,15 @@ export default function ListingsManager({ canDelete, initialListings = [], useLo
             </div>
 
             <div className={styles.field}>
-              <span className={styles.label}>Area</span>
-              <div className={styles.readonlyValue}>{formValues.locationEn || '—'}</div>
+              <span className={styles.label}>Village</span>
+              <div className={styles.readonlyValue}>
+                {villages.find((v) => v.id === formValues.villageId)?.nameEn || '—'}
+              </div>
             </div>
 
             <div className={styles.field}>
               <span className={styles.label}>District</span>
-              <div className={styles.readonlyValue}>{formValues.area ? capitalize(formValues.area) : '—'}</div>
+              <div className={styles.readonlyValue}>{formValues.district ? capitalize(formValues.district) : '—'}</div>
             </div>
 
             <div className={styles.grid}>
@@ -1126,30 +1057,28 @@ export default function ListingsManager({ canDelete, initialListings = [], useLo
 
             <div className={styles.grid}>
               <label className={styles.field}>
-                <span className={styles.label}>Area</span>
+                <span className={styles.label}>Village</span>
                 <select
-                  ref={locationSelectRef}
                   className={styles.select}
-                  value={formValues.locationEn}
-                  onChange={(event) => updateField('locationEn', event.target.value)}
+                  value={formValues.villageId}
+                  onChange={(event) => updateField('villageId', event.target.value)}
                 >
-                  <option value="">Select an area</option>
-                  {areas.map((area) => (
-                    <option key={area.id} value={area.nameEn}>
-                      {area.nameEn}
+                  <option value="">Select a village</option>
+                  {villages.map((village) => (
+                    <option key={village.id} value={village.id}>
+                      {village.nameEn}
                     </option>
                   ))}
                 </select>
-                {fieldErrors.locationEn ? <span className={styles.fieldError}>{fieldErrors.locationEn}</span> : null}
+                {fieldErrors.villageId ? <span className={styles.fieldError}>{fieldErrors.villageId}</span> : null}
               </label>
 
               <label className={styles.field}>
                 <span className={styles.label}>District</span>
                 <select
-                  ref={districtSelectRef}
                   className={styles.select}
-                  value={formValues.area}
-                  onChange={(event) => updateField('area', event.target.value)}
+                  value={formValues.district}
+                  onChange={(event) => updateField('district', event.target.value)}
                 >
                   <option value="">— Not set —</option>
                   {VIENTIANE_DISTRICTS.map((district) => (

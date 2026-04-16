@@ -10,10 +10,10 @@ export type ListingMutationInput = {
   featured: boolean
   sponsored: boolean
   sponsoredUntil: string | null
-  areaId: string | null
+  villageId: string | null
+  district: string | null
   titleEn: string
   descriptionEn: string
-  locationEn: string
   price: string
   priceUnit: (typeof PRICE_UNIT_VALUES)[number]
   areaSqm: string | null
@@ -188,8 +188,10 @@ export function validateListingPayload(body: unknown): ValidationResult {
   }
 
   const fieldErrors: Record<string, string> = {}
-  const rawAreaId = body.areaId
-  const areaId = typeof rawAreaId === 'string' && rawAreaId.trim() ? rawAreaId.trim() : null
+  const rawVillageId = body.villageId
+  const villageId = typeof rawVillageId === 'string' && rawVillageId.trim() ? rawVillageId.trim() : null
+  const rawDistrict = body.district
+  const district = typeof rawDistrict === 'string' && rawDistrict.trim() ? rawDistrict.trim() : null
 
   const data: ListingMutationInput = {
     category: getEnumValue(body, 'category', CATEGORY_VALUES, 'Category', fieldErrors),
@@ -198,10 +200,10 @@ export function validateListingPayload(body: unknown): ValidationResult {
     featured: getBooleanValue(body, 'featured'),
     sponsored: getBooleanValue(body, 'sponsored'),
     sponsoredUntil: getOptionalDate(body, 'sponsoredUntil', fieldErrors),
-    areaId,
+    villageId,
+    district,
     titleEn: getRequiredString(body, 'titleEn', 'Title', fieldErrors),
     descriptionEn: getRequiredString(body, 'descriptionEn', 'Description', fieldErrors),
-    locationEn: getRequiredString(body, 'locationEn', 'Location', fieldErrors),
     price: getRequiredDecimal(body, 'price', 'Price', fieldErrors),
     priceUnit: getEnumValue(body, 'priceUnit', PRICE_UNIT_VALUES, 'Price unit', fieldErrors),
     areaSqm: getOptionalDecimal(body, 'areaSqm', 'Area', fieldErrors),

@@ -17,15 +17,15 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params
-  const area = await prisma.area.findUnique({
+  const village = await prisma.village.findUnique({
     where: { id },
   })
 
-  if (!area) {
-    return NextResponse.json({ error: 'Area not found' }, { status: 404 })
+  if (!village) {
+    return NextResponse.json({ error: 'Village not found' }, { status: 404 })
   }
 
-  return NextResponse.json(area)
+  return NextResponse.json(village)
 }
 
 export async function PATCH(
@@ -41,28 +41,28 @@ export async function PATCH(
   const { nameEn, nameLo, nameZh, slug: customSlug, active, order } = body
 
   const { id } = await params
-  const existing = await prisma.area.findUnique({
+  const existing = await prisma.village.findUnique({
     where: { id },
   })
 
   if (!existing) {
-    return NextResponse.json({ error: 'Area not found' }, { status: 404 })
+    return NextResponse.json({ error: 'Village not found' }, { status: 404 })
   }
 
-  const updateData: any = {}
-  
+  const updateData: Record<string, unknown> = {}
+
   if (nameEn !== undefined) {
     updateData.nameEn = nameEn
   }
   if (customSlug !== undefined) {
     const newSlug = customSlug?.trim() || (nameEn ? generateSlug(nameEn) : existing.slug)
     if (newSlug !== existing.slug) {
-      const slugExists = await prisma.area.findFirst({
+      const slugExists = await prisma.village.findFirst({
         where: { slug: newSlug, id: { not: id } },
       })
       if (slugExists) {
         return NextResponse.json(
-          { error: 'Area with this slug already exists' },
+          { error: 'Village with this slug already exists' },
           { status: 400 }
         )
       }
@@ -74,12 +74,12 @@ export async function PATCH(
   if (active !== undefined) updateData.active = active
   if (order !== undefined) updateData.order = order
 
-  const area = await prisma.area.update({
+  const village = await prisma.village.update({
     where: { id },
     data: updateData,
   })
 
-  return NextResponse.json(area)
+  return NextResponse.json(village)
 }
 
 export async function DELETE(
@@ -92,26 +92,26 @@ export async function DELETE(
   }
 
   const { id } = await params
-  const existing = await prisma.area.findUnique({
+  const existing = await prisma.village.findUnique({
     where: { id },
   })
 
   if (!existing) {
-    return NextResponse.json({ error: 'Area not found' }, { status: 404 })
+    return NextResponse.json({ error: 'Village not found' }, { status: 404 })
   }
 
   const listingsCount = await prisma.listing.count({
-    where: { areaId: id },
+    where: { villageId: id },
   })
 
   if (listingsCount > 0) {
     return NextResponse.json(
-      { error: `Cannot delete area. ${listingsCount} listings are using this area.` },
+      { error: `Cannot delete village. ${listingsCount} listings are using this village.` },
       { status: 400 }
     )
   }
 
-  await prisma.area.delete({
+  await prisma.village.delete({
     where: { id },
   })
 

@@ -12,7 +12,7 @@ interface Props {
 }
 
 export default function ListingCard({ listing, locale, typeLabel, areaLabel, sqmLabel }: Props) {
-  const { slug, titleEn, locationEn, price, priceUnit, photos, category, transaction } = listing
+  const { slug, titleEn, villageName, price, priceUnit, photos, category, transaction } = listing
   const photo = photos[0]
   const areaSqm = listing.areaSqm
 
@@ -36,7 +36,7 @@ export default function ListingCard({ listing, locale, typeLabel, areaLabel, sqm
         <span className={`${styles.badge} ${badgeClass}`}>{typeLabel}</span>
       </div>
       <div className={styles.body}>
-        <p className={styles.location}>{locationEn}</p>
+        <p className={styles.location}>{villageName}</p>
         <h3 className={styles.title}>{titleEn}</h3>
         <div className={styles.meta}>
           <span className={styles.price}>{formatPrice(price, priceUnit)}</span>
