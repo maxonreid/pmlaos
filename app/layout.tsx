@@ -88,6 +88,28 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <meta name="apple-mobile-web-app-title" content="PM Laos" />
         <meta name="msapplication-TileColor" content="#000000" />
         <meta name="msapplication-tap-highlight" content="no" />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              '@context': 'https://schema.org',
+              '@type': 'RealEstateAgent',
+              name: 'PM Real Estate',
+              alternateName: 'PM Laos',
+              url: 'https://pmlaos.com',
+              logo: 'https://pmlaos.com/icon-512x512.png',
+              description: 'Browse, search and manage properties in Vientiane, Laos.',
+              address: {
+                '@type': 'PostalAddress',
+                addressLocality: 'Vientiane',
+                addressCountry: 'LA',
+              },
+              telephone: '+856-20-99-935-869',
+              email: 'contact@pmlaos.com',
+              sameAs: ['https://www.facebook.com/PMLaos/'],
+            }),
+          }}
+        />
       </head>
       <body className={inter.className}>
         <PWAInstaller />

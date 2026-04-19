@@ -167,6 +167,7 @@
     "officeAddress": "苏法努旺大道 12 号\n占塔布里区\n万象，老挝人民民主共和国",
     "whatsappLabel": "WhatsApp",
     "emailLabel": "电子邮件",
+    "facebookLabel": "脸书",
     "mapTitle": "位置"
   },
   "footer": {
@@ -178,7 +179,8 @@
     "contactTitle": "联系信息",
     "address": "老挝万象",
     "copyright": "保留所有权利。",
-    "staffLogin": "员工登录"
+    "staffLogin": "员工登录",
+    "followUs": "关注我们"
   },
   "pwa": {
     "installButton": "安装",

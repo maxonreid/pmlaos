@@ -167,6 +167,7 @@
     "officeAddress": "Unit 12, Souphanouvong Avenue\nChanthabouly District\nVientiane, Laos PDR",
     "whatsappLabel": "WhatsApp",
     "emailLabel": "Email",
+    "facebookLabel": "Facebook",
     "mapTitle": "Location"
   },
   "footer": {
@@ -178,7 +179,8 @@
     "contactTitle": "Contact Info",
     "address": "Vientiane, Laos",
     "copyright": "All rights reserved.",
-    "staffLogin": "Staff Login"
+    "staffLogin": "Staff Login",
+    "followUs": "Follow Us"
   },
   "pwa": {
     "installButton": "Install",

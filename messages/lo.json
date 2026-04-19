@@ -54,7 +54,8 @@
     "contactTitle": "ຂໍ້ມູນຕິດຕໍ່",
     "address": "ວຽງຈັນ, ລາວ",
     "copyright": "ສະຫງວນລິຂະສິດ.",
-    "staffLogin": "ເຂົ້າສູ່ລະບົບພະນັກງານ"
+    "staffLogin": "ເຂົ້າສູ່ລະບົບພະນັກງານ",
+    "followUs": "ຕິດຕາມພວກເຮົາ"
   },
   "pwa": {
     "installButton": "ຕິດຕັ້ງ",
@@ -194,6 +195,7 @@
   "officeAddress": "ຫ້ອງ 12, ຖະໜົນສຸພານຸວົງ\nເມືອງຈັນທະບູລີ\nນະຄອນຫຼວງວຽງຈັນ, ສປປ ລາວ",
   "whatsappLabel": "WhatsApp",
   "emailLabel": "ອີເມວ",
+  "facebookLabel": "ເຟສບຸກ",
   "mapTitle": "ສະຖານທີ່"
 },
 "notFound": {

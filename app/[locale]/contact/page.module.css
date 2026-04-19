@@ -145,3 +145,19 @@
   color: var(--color-accent);
   transform: translateX(4px);
 }
+
+.facebookLink {
+  font-size: clamp(1rem, 2.5vw, 1.125rem);
+  color: var(--color-primary);
+  text-decoration: none;
+  transition: all 0.3s ease;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.facebookLink:hover {
+  color: #1877f2;
+  transform: translateX(4px);
+}
