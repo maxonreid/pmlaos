@@ -109,6 +109,8 @@
   "filterToggleLabel": "ຕົວກອງ",
   "applyFilters": "ນໍາໃຊ້ຕົວກອງ",
   "clearFilters": "ລ້າງຕົວກອງ",
+  "resultSingular": "ລາຍການ",
+  "resultPlural": "ລາຍການ",
   "noResults": "ບໍ່ພົບລາຍການສໍາລັບຕົວກອງນີ້.",
   "paginationPrev": "ກ່ອນໜ້າ",
   "paginationNext": "ຕໍ່ໄປ"

@@ -22,20 +22,27 @@ export default function FiltersPanel({ initiallyOpen, label, activeCount, childr
   const [isOpen, setIsOpen] = useState(initiallyOpen)
 
   return (
-    <details
-      className={pageStyles.filterToggle}
-      open={isOpen}
-      onToggle={(event) => setIsOpen((event.currentTarget as HTMLDetailsElement).open)}
-    >
-      <summary className={pageStyles.filterToggleSummary}>
+    <div className={pageStyles.filterToggle}>
+      <button
+        type="button"
+        className={`${pageStyles.filterToggleSummary} ${isOpen ? pageStyles.filterToggleSummaryOpen : ''}`}
+        onClick={() => setIsOpen(o => !o)}
+        aria-expanded={isOpen}
+      >
         <FilterIcon />
         <span className={pageStyles.filterToggleLabel}>{label}</span>
         {activeCount != null && activeCount > 0 && (
           <span className={pageStyles.filterToggleBadge}>{activeCount}</span>
         )}
-      </summary>
+      </button>
 
-      {isOpen ? children : null}
-    </details>
+      <div className={`${pageStyles.filterPanelBody} ${isOpen ? pageStyles.filterPanelBodyOpen : ''}`}>
+        <div className={pageStyles.filterPanelInner}>
+          <div className={pageStyles.filterPanelCard}>
+            {children}
+          </div>
+        </div>
+      </div>
+    </div>
   )
 }

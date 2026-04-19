@@ -229,12 +229,9 @@
 
 /* ── Advanced filters ───────────────────────────────────── */
 .advancedFilters {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1.25rem;
-  align-items: flex-end;
-  padding-top: 1rem;
-  border-top: 1px solid var(--color-border);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem 2rem;
 }
 
 .filterGroup {
@@ -316,6 +313,7 @@
   align-items: center;
   gap: 0.875rem;
   flex-wrap: wrap;
+  grid-column: 1 / -1;
 }
 
 .applyButton {
@@ -348,7 +346,7 @@
 
 /* ── Filter toggle ──────────────────────────────────────── */
 .filterToggle {
-  /* no extra wrapper styles needed */
+  /* wrapper */
 }
 
 .filterToggleSummary {
@@ -364,14 +362,10 @@
   font-size: 0.875rem;
   font-weight: 600;
   cursor: pointer;
-  list-style: none;
   user-select: none;
+  appearance: none;
+  -webkit-appearance: none;
   transition: border-color 0.15s, color 0.15s, background 0.15s;
-  margin-bottom: 0;
-}
-
-.filterToggleSummary::-webkit-details-marker {
-  display: none;
 }
 
 .filterToggleSummary:hover {
@@ -392,19 +386,18 @@
   flex-shrink: 0;
 }
 
-.filterToggle[open] .filterToggleSummary {
+.filterToggleSummaryOpen {
   border-color: var(--color-primary);
   color: var(--color-primary);
   background: color-mix(in srgb, var(--color-primary) 6%, white);
-  margin-bottom: 0.75rem;
 }
 
-.filterToggle[open] .filterToggleSummary::after {
+.filterToggleSummaryOpen::after {
   transform: rotate(225deg);
   margin-top: 0.1rem;
 }
 
-.filterToggle[open] .filterToggleSummary:hover {
+.filterToggleSummaryOpen:hover {
   background: color-mix(in srgb, var(--color-primary) 12%, white);
 }
 
@@ -425,6 +418,95 @@
   line-height: 1;
   background: var(--color-primary);
   color: var(--color-white);
+}
+
+/* ── Filter panel animation ─────────────────────────────── */
+.filterPanelBody {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.25s ease;
+}
+
+.filterPanelBodyOpen {
+  grid-template-rows: 1fr;
+}
+
+.filterPanelInner {
+  overflow: hidden;
+  min-height: 0;
+}
+
+.filterPanelCard {
+  padding: 1.25rem 1.5rem 1.5rem;
+  margin-top: 0.625rem;
+  background: color-mix(in srgb, var(--color-primary) 3%, var(--color-white));
+  border: 1px solid var(--color-border);
+  border-radius: 1rem;
+}
+
+/* ── Active filter chips ────────────────────────────────── */
+.activeChips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+  flex: 1;
+  min-width: 0;
+}
+
+.activeChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.3125rem 0.75rem;
+  background: color-mix(in srgb, var(--color-primary) 10%, var(--color-white));
+  border: 1px solid color-mix(in srgb, var(--color-primary) 28%, transparent);
+  border-radius: 99px;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--color-primary);
+  text-decoration: none;
+  transition: background 0.15s, border-color 0.15s;
+  white-space: nowrap;
+}
+
+.activeChip:hover {
+  background: color-mix(in srgb, var(--color-primary) 18%, var(--color-white));
+}
+
+.activeChipX {
+  font-size: 0.9rem;
+  line-height: 1;
+  opacity: 0.55;
+  font-style: normal;
+}
+
+.clearAllChips {
+  font-size: 0.8125rem;
+  color: var(--color-text-muted);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  white-space: nowrap;
+}
+
+.clearAllChips:hover {
+  color: var(--color-primary);
+}
+
+/* ── Result bar ─────────────────────────────────────────── */
+.resultBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.resultCount {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
 }
 
 /* Screen-reader only */
@@ -532,16 +614,33 @@
 
 @media (max-width: 640px) {
   .advancedFilters {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .filterGroup {
-    width: 100%;
+    grid-template-columns: 1fr;
   }
 
   .grid {
     grid-template-columns: 1fr;
+  }
+
+  .areaPillsRow {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding-bottom: 2px;
+  }
+
+  .areaPillsRow::-webkit-scrollbar {
+    display: none;
+  }
+
+  .filterToggleSummary {
+    width: 100%;
+    justify-content: center;
+    min-height: 3rem;
+  }
+
+  .filterPanelCard {
+    padding: 1rem 1rem 1.25rem;
   }
 }
 

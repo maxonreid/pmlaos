@@ -8,10 +8,10 @@
 
 .track {
   position: relative;
-  height: 4px;
+  height: 5px;
   background: var(--color-border);
-  border-radius: 2px;
-  margin: 0.75rem 0 0.25rem;
+  border-radius: 3px;
+  margin: 1rem 0 0.375rem;
 }
 
 .fill {
@@ -39,12 +39,12 @@
 /* Webkit thumb */
 .input::-webkit-slider-thumb {
   appearance: none;
-  width: 18px;
-  height: 18px;
+  width: 22px;
+  height: 22px;
   border-radius: 50%;
   background: var(--color-primary);
-  border: 2.5px solid var(--color-bg);
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.22);
+  border: 3px solid var(--color-bg);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.22);
   pointer-events: all;
   cursor: grab;
   transition: transform 0.1s, background 0.1s;
@@ -61,12 +61,12 @@
 
 /* Firefox thumb */
 .input::-moz-range-thumb {
-  width: 18px;
-  height: 18px;
+  width: 22px;
+  height: 22px;
   border-radius: 50%;
   background: var(--color-primary);
-  border: 2.5px solid var(--color-bg);
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.22);
+  border: 3px solid var(--color-bg);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.22);
   pointer-events: all;
   cursor: grab;
 }
@@ -79,7 +79,8 @@
 .labels {
   display: flex;
   justify-content: space-between;
-  font-size: 0.8rem;
-  font-weight: 500;
-  color: var(--color-text-muted);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--color-primary);
+  margin-top: 0.125rem;
 }

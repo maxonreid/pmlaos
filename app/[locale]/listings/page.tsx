@@ -8,6 +8,7 @@ import { offsetCoordinates } from '@/lib/mapOffset'
 import { prisma } from '@/lib/prisma'
 import FiltersPanel from '@/components/public/FiltersPanel/FiltersPanel'
 import AutoSubmitForm from '@/components/public/AutoSubmitForm/AutoSubmitForm'
+import AmenityFilters from '@/components/public/AmenityFilters/AmenityFilters'
 import styles from './page.module.css'
 
 type AdvancedFilters = {
@@ -20,6 +21,12 @@ type AdvancedFilters = {
 }
 
 const PAGE_SIZE = 12
+
+function fmtNum(val: number, prefix = '', suffix = ''): string {
+  if (val >= 1_000_000) return `${prefix}${(val / 1_000_000).toFixed(1)}M${suffix}`
+  if (val >= 1_000) return `${prefix}${(val / 1_000).toFixed(0)}k${suffix}`
+  return `${prefix}${val}${suffix}`
+}
 
 type ListingsHrefOptions = {
   transaction?: TransactionType
@@ -147,6 +154,47 @@ export default async function ListingsPage({
   const areaBoundMax = boundsPoolAreas.length ? Math.ceil(Math.max(...boundsPoolAreas) / 10) * 10 : 2_000
   const selectedListing = filtered.find((listing) => listing.slug === rawSelected)
   const isMapOpen = false
+
+  // Active filter chips — one chip per active filter, each clears just that filter
+  const activeChips: { key: string; label: string; href: string }[] = []
+  if (query) {
+    activeChips.push({
+      key: 'q',
+      label: `"${query}"`,
+      href: buildListingsHref(locale, { transaction, category, areaSlug, minPrice, maxPrice, minArea, maxArea, minBedrooms, amenities }),
+    })
+  }
+  if (minPrice != null || maxPrice != null) {
+    activeChips.push({
+      key: 'price',
+      label: `${fmtNum(minPrice ?? priceBoundMin, '$')} – ${fmtNum(maxPrice ?? priceBoundMax, '$')}`,
+      href: buildListingsHref(locale, { transaction, category, areaSlug, query, minArea, maxArea, minBedrooms, amenities }),
+    })
+  }
+  if (minArea != null || maxArea != null) {
+    activeChips.push({
+      key: 'area',
+      label: `${minArea ?? areaBoundMin}–${maxArea ?? areaBoundMax} sqm`,
+      href: buildListingsHref(locale, { transaction, category, areaSlug, query, minPrice, maxPrice, minBedrooms, amenities }),
+    })
+  }
+  if (minBedrooms != null) {
+    activeChips.push({
+      key: 'beds',
+      label: `${minBedrooms}+ beds`,
+      href: buildListingsHref(locale, { transaction, category, areaSlug, query, minPrice, maxPrice, minArea, maxArea, amenities }),
+    })
+  }
+  if (amenities?.length) {
+    for (const a of amenities) {
+      const remaining = amenities.filter(x => x !== a)
+      activeChips.push({
+        key: `amenity-${a}`,
+        label: a.charAt(0).toUpperCase() + a.slice(1),
+        href: buildListingsHref(locale, { transaction, category, areaSlug, query, minPrice, maxPrice, minArea, maxArea, minBedrooms, amenities: remaining.length ? remaining : undefined }),
+      })
+    }
+  }
 
   // Transaction tabs clear advanced filters (price scales differ between Buy/Rent)
   const buyHref = transaction === 'sale'
@@ -359,32 +407,20 @@ export default async function ListingsPage({
               {/* Amenity chips */}
               <div className={styles.filterGroup}>
                 <span className={styles.filterGroupLabel}>{t('listings.filterAmenities')}</span>
-                <div className={styles.amenityChips}>
-                  {(
-                    [
-                      { value: 'gym',     labelKey: 'listings.filterAmenityGym'     },
-                      { value: 'pool',    labelKey: 'listings.filterAmenityPool'    },
-                      { value: 'parking', labelKey: 'listings.filterAmenityParking' },
-                    ] as const
-                  ).map(({ value, labelKey }) => {
-                    const checked = amenities?.includes(value)
-                    return (
-                      <label
-                        key={value}
-                        className={`${styles.amenityChip} ${checked ? styles.amenityChipActive : ''}`}
-                      >
-                        <input
-                          type="checkbox"
-                          name="amenities"
-                          value={value}
-                          defaultChecked={checked}
-                          className={styles.srOnly}
-                        />
-                        {t(labelKey)}
-                      </label>
-                    )
-                  })}
-                </div>
+                <AmenityFilters
+                  key={(amenities ?? []).join(',')}
+                  initialAmenities={amenities ?? []}
+                  options={[
+                    { value: 'gym',     label: t('listings.filterAmenityGym')     },
+                    { value: 'pool',    label: t('listings.filterAmenityPool')    },
+                    { value: 'parking', label: t('listings.filterAmenityParking') },
+                  ]}
+                  styles={{
+                    amenityChips: styles.amenityChips,
+                    amenityChip: styles.amenityChip,
+                    amenityChipActive: styles.amenityChipActive,
+                  }}
+                />
               </div>
 
               {/* Actions */}
@@ -404,6 +440,29 @@ export default async function ListingsPage({
             </div>
             </FiltersPanel>
           </AutoSubmitForm>
+        </div>
+
+        {/* Active filter chips + result count */}
+        <div className={styles.resultBar}>
+          <div className={styles.activeChips}>
+            {activeChips.map(({ key, label, href }) => (
+              <a key={key} href={href} className={styles.activeChip}>
+                {label}
+                <em className={styles.activeChipX} aria-hidden="true">×</em>
+              </a>
+            ))}
+            {activeChips.length > 1 && (
+              <a
+                href={buildListingsHref(locale, { transaction, category, query, areaSlug })}
+                className={styles.clearAllChips}
+              >
+                {t('listings.clearFilters')}
+              </a>
+            )}
+          </div>
+          <span className={styles.resultCount}>
+            {totalCount} {totalCount === 1 ? t('listings.resultSingular') : t('listings.resultPlural')}
+          </span>
         </div>
 
         <ListingsMapPanel

@@ -81,6 +81,8 @@
     "filterToggleLabel": "筛选",
     "applyFilters": "应用筛选",
     "clearFilters": "清除筛选",
+    "resultSingular": "套房源",
+    "resultPlural": "套房源",
     "noResults": "没有找到符合此筛选条件的房源。",
     "paginationPrev": "上一页",
     "paginationNext": "下一页"

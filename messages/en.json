@@ -81,6 +81,8 @@
     "filterToggleLabel": "Filters",
     "applyFilters": "Apply Filters",
     "clearFilters": "Clear filters",
+    "resultSingular": "listing",
+    "resultPlural": "listings",
     "noResults": "No listings found for this filter.",
     "paginationPrev": "Previous",
     "paginationNext": "Next"
