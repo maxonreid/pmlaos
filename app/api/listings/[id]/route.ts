@@ -84,6 +84,7 @@ export async function PUT(
         parkingAvailable: data.parkingAvailable,
         swimmingPool: data.swimmingPool,
         hasFitness: data.hasFitness,
+        amenities: data.amenities,
         lat: data.lat,
         lng: data.lng,
         photos: {

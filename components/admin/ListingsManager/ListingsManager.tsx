@@ -47,6 +47,7 @@ type ListingSummary = {
   parkingAvailable?: boolean | null
   swimmingPool?: boolean | null
   hasFitness?: boolean | null
+  amenities?: string[]
   lat?: string | number | null
   lng?: string | number | null
   photos?: Array<{ url: string; order?: number }>
@@ -85,6 +86,7 @@ type FormValues = {
   parkingAvailable: boolean
   swimmingPool: boolean
   hasFitness: boolean
+  amenities: string[]
   lat: string | null
   lng: string | null
   photos: string[]
@@ -115,6 +117,7 @@ const EMPTY_FORM: FormValues = {
   parkingAvailable: false,
   swimmingPool: false,
   hasFitness: false,
+  amenities: [],
   lat: null,
   lng: null,
   photos: [],
@@ -145,6 +148,7 @@ function toFormValues(listing: ListingDetail): FormValues {
     parkingAvailable: Boolean(listing.parkingAvailable),
     swimmingPool: Boolean(listing.swimmingPool),
     hasFitness: Boolean(listing.hasFitness),
+    amenities: listing.amenities ?? [],
     lat: listing.lat === null || listing.lat === undefined ? null : String(listing.lat),
     lng: listing.lng === null || listing.lng === undefined ? null : String(listing.lng),
     photos: listing.photos?.map((photo) => photo.url) ?? [],
@@ -305,6 +309,15 @@ export default function ListingsManager({ canDelete, initialListings = [], useLo
       delete next[key]
       return next
     })
+  }
+
+  const toggleAmenity = (key: string, checked: boolean) => {
+    setFormValues((prev) => ({
+      ...prev,
+      amenities: checked
+        ? [...prev.amenities, key]
+        : prev.amenities.filter((a) => a !== key),
+    }))
   }
 
   const resetForm = () => {
@@ -504,6 +517,7 @@ export default function ListingsManager({ canDelete, initialListings = [], useLo
         bathrooms: payload.bathrooms ? Number(payload.bathrooms) : null,
         parkingAvailable: Boolean(payload.parkingAvailable),
         swimmingPool: payload.swimmingPool ? true : null,
+        amenities: payload.amenities ?? [],
         lat: payload.lat ? Number(payload.lat) : null,
         lng: payload.lng ? Number(payload.lng) : null,
         photos: payload.photos.map((url, order) => ({ url, order })),
@@ -1011,6 +1025,11 @@ export default function ListingsManager({ canDelete, initialListings = [], useLo
                     formValues.parkingAvailable ? 'Parking' : null,
                     formValues.swimmingPool ? 'Swimming pool' : null,
                     formValues.hasFitness ? 'Fitness room' : null,
+                    formValues.amenities.includes('air_conditioning') ? 'Air conditioning' : null,
+                    formValues.amenities.includes('kitchen') ? 'Kitchen' : null,
+                    formValues.amenities.includes('living_room') ? 'Living room' : null,
+                    formValues.amenities.includes('refrigerator') ? 'Refrigerator' : null,
+                    formValues.amenities.includes('microwave') ? 'Microwave' : null,
                   ].filter(Boolean).join(', ') || '—'}
                 </div>
               </div>
@@ -1307,6 +1326,46 @@ export default function ListingsManager({ canDelete, initialListings = [], useLo
                     onChange={(event) => updateField('hasFitness', event.target.checked)}
                   />
                   <span>Fitness room</span>
+                </label>
+                <label className={styles.checkbox}>
+                  <input
+                    type="checkbox"
+                    checked={formValues.amenities.includes('air_conditioning')}
+                    onChange={(event) => toggleAmenity('air_conditioning', event.target.checked)}
+                  />
+                  <span>Air conditioning</span>
+                </label>
+                <label className={styles.checkbox}>
+                  <input
+                    type="checkbox"
+                    checked={formValues.amenities.includes('kitchen')}
+                    onChange={(event) => toggleAmenity('kitchen', event.target.checked)}
+                  />
+                  <span>Kitchen</span>
+                </label>
+                <label className={styles.checkbox}>
+                  <input
+                    type="checkbox"
+                    checked={formValues.amenities.includes('living_room')}
+                    onChange={(event) => toggleAmenity('living_room', event.target.checked)}
+                  />
+                  <span>Living room</span>
+                </label>
+                <label className={styles.checkbox}>
+                  <input
+                    type="checkbox"
+                    checked={formValues.amenities.includes('refrigerator')}
+                    onChange={(event) => toggleAmenity('refrigerator', event.target.checked)}
+                  />
+                  <span>Refrigerator</span>
+                </label>
+                <label className={styles.checkbox}>
+                  <input
+                    type="checkbox"
+                    checked={formValues.amenities.includes('microwave')}
+                    onChange={(event) => toggleAmenity('microwave', event.target.checked)}
+                  />
+                  <span>Microwave</span>
                 </label>
               </div>
             </div>

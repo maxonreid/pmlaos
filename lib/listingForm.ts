@@ -23,6 +23,7 @@ export type ListingMutationInput = {
   parkingAvailable: boolean
   swimmingPool: boolean
   hasFitness: boolean
+  amenities: string[]
   lat: string | null
   lng: string | null
   photos: string[]
@@ -78,6 +79,12 @@ function getEnumValue<T extends readonly string[]>(
 
 function getBooleanValue(body: Record<string, unknown>, key: string) {
   return body[key] === true
+}
+
+function getAmenities(body: Record<string, unknown>): string[] {
+  const value = body.amenities
+  if (!Array.isArray(value)) return []
+  return value.filter((item): item is string => typeof item === 'string')
 }
 
 function getRequiredDecimal(
@@ -226,6 +233,7 @@ export function validateListingPayload(body: unknown): ValidationResult {
     parkingAvailable: getBooleanValue(body, 'parkingAvailable'),
     swimmingPool: getBooleanValue(body, 'swimmingPool'),
     hasFitness: getBooleanValue(body, 'hasFitness'),
+    amenities: getAmenities(body),
     lat: getOptionalDecimal(body, 'lat', 'Latitude', fieldErrors),
     lng: getOptionalDecimal(body, 'lng', 'Longitude', fieldErrors),
     photos: getPhotos(body, fieldErrors),

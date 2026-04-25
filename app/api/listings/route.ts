@@ -92,6 +92,7 @@ export async function POST(req: NextRequest) {
       parkingAvailable: data.parkingAvailable,
       swimmingPool: data.swimmingPool,
       hasFitness: data.hasFitness,
+      amenities: data.amenities,
       lat: data.lat,
       lng: data.lng,
       photos: data.photos.length > 0
