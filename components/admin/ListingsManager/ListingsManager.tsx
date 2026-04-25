@@ -231,7 +231,7 @@ export default function ListingsManager({ canDelete, initialListings = [], useLo
   const [editingId, setEditingId] = useState<string | null>(null)
   const [listingPendingDelete, setListingPendingDelete] = useState<ListingSummary | null>(null)
   const [searchQuery, setSearchQuery] = useState('')
-  const [categoryFilter, setCategoryFilter] = useState<'all' | 'house' | 'apartment' | 'land'>('all')
+  const [categoryFilter, setCategoryFilter] = useState<'all' | 'house' | 'apartment' | 'land' | 'hotel'>('all')
   const [transactionFilter, setTransactionFilter] = useState<'all' | 'sale' | 'rent'>('all')
   const [loading, setLoading] = useState(true)
   const [loadingForm, setLoadingForm] = useState(false)
@@ -756,6 +756,7 @@ export default function ListingsManager({ canDelete, initialListings = [], useLo
                   { value: 'house', label: 'House' },
                   { value: 'apartment', label: 'Apartment' },
                   { value: 'land', label: 'Land' },
+                  { value: 'hotel', label: 'Hotel' },
                 ].map((option) => (
                   <button
                     key={option.value}
@@ -1309,7 +1310,7 @@ export default function ListingsManager({ canDelete, initialListings = [], useLo
                     checked={formValues.parkingAvailable}
                     onChange={(event) => updateField('parkingAvailable', event.target.checked)}
                   />
-                  <span>Parking</span>
+                  <span>🅿️ Parking</span>
                 </label>
                 <label className={styles.checkbox}>
                   <input
@@ -1317,7 +1318,7 @@ export default function ListingsManager({ canDelete, initialListings = [], useLo
                     checked={formValues.swimmingPool}
                     onChange={(event) => updateField('swimmingPool', event.target.checked)}
                   />
-                  <span>Swimming pool</span>
+                  <span>🏊 Swimming pool</span>
                 </label>
                 <label className={styles.checkbox}>
                   <input
@@ -1325,7 +1326,7 @@ export default function ListingsManager({ canDelete, initialListings = [], useLo
                     checked={formValues.hasFitness}
                     onChange={(event) => updateField('hasFitness', event.target.checked)}
                   />
-                  <span>Fitness room</span>
+                  <span>🏋️ Fitness room</span>
                 </label>
                 <label className={styles.checkbox}>
                   <input
@@ -1333,7 +1334,7 @@ export default function ListingsManager({ canDelete, initialListings = [], useLo
                     checked={formValues.amenities.includes('air_conditioning')}
                     onChange={(event) => toggleAmenity('air_conditioning', event.target.checked)}
                   />
-                  <span>Air conditioning</span>
+                  <span>❄️ Air conditioning</span>
                 </label>
                 <label className={styles.checkbox}>
                   <input
@@ -1341,7 +1342,7 @@ export default function ListingsManager({ canDelete, initialListings = [], useLo
                     checked={formValues.amenities.includes('kitchen')}
                     onChange={(event) => toggleAmenity('kitchen', event.target.checked)}
                   />
-                  <span>Kitchen</span>
+                  <span>🍳 Kitchen</span>
                 </label>
                 <label className={styles.checkbox}>
                   <input
@@ -1349,7 +1350,7 @@ export default function ListingsManager({ canDelete, initialListings = [], useLo
                     checked={formValues.amenities.includes('living_room')}
                     onChange={(event) => toggleAmenity('living_room', event.target.checked)}
                   />
-                  <span>Living room</span>
+                  <span>🛋️ Living room</span>
                 </label>
                 <label className={styles.checkbox}>
                   <input
@@ -1357,7 +1358,7 @@ export default function ListingsManager({ canDelete, initialListings = [], useLo
                     checked={formValues.amenities.includes('refrigerator')}
                     onChange={(event) => toggleAmenity('refrigerator', event.target.checked)}
                   />
-                  <span>Refrigerator</span>
+                  <span>🧊 Refrigerator</span>
                 </label>
                 <label className={styles.checkbox}>
                   <input
@@ -1365,7 +1366,7 @@ export default function ListingsManager({ canDelete, initialListings = [], useLo
                     checked={formValues.amenities.includes('microwave')}
                     onChange={(event) => toggleAmenity('microwave', event.target.checked)}
                   />
-                  <span>Microwave</span>
+                  <span>🍲 Microwave</span>
                 </label>
               </div>
             </div>

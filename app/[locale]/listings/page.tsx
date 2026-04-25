@@ -135,11 +135,12 @@ export default async function ListingsPage({
   ].filter(Boolean).length
 
   // Compute slider bounds from listings matching the active transaction (if set)
-  const [boundsPool, totalCount, filtered, baseResults] = await Promise.all([
+  const [boundsPool, totalCount, filtered, baseResults, allForMap] = await Promise.all([
     getPublicListings({ transaction }),
     getListingsCount({ category, transaction, areaSlug, query, minPrice, maxPrice, minArea, maxArea, minBedrooms, amenities }),
     getPublicListings({ category, transaction, areaSlug, query, minPrice, maxPrice, minArea, maxArea, minBedrooms, amenities, skip: (page - 1) * PAGE_SIZE, take: PAGE_SIZE }),
     getPublicListings({ category, transaction, query, minPrice, maxPrice, minArea, maxArea, minBedrooms, amenities }),
+    getPublicListings({ category, transaction, areaSlug, query, minPrice, maxPrice, minArea, maxArea, minBedrooms, amenities }),
   ])
 
   const totalPages = Math.ceil(totalCount / PAGE_SIZE)
@@ -242,7 +243,7 @@ export default async function ListingsPage({
 
   const allAreasHref = buildListingsHref(locale, { transaction, category, query, ...adv })
 
-  const mapPins = filtered
+  const mapPins = allForMap
     .filter((listing) => listing.lat != null && listing.lng != null)
     .map((listing) => {
       const { lat, lng } = offsetCoordinates(listing.lat as number, listing.lng as number, listing.id)
