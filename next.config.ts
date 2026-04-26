@@ -47,7 +47,7 @@ const nextConfig: NextConfig = {
               "style-src 'self' 'unsafe-inline'",
               "img-src 'self' data: blob: https: https://tile.openstreetmap.org",
               "font-src 'self' data:",
-              "connect-src 'self' https://tile.openstreetmap.org https://*.neon.tech https://cloud.umami.is",
+              "connect-src 'self' https://tile.openstreetmap.org https://*.neon.tech https://cloud.umami.is https://api-gateway.umami.dev",
               "frame-src 'self'",
               "worker-src 'self' blob:",
             ].join('; '),
