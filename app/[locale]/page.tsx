@@ -119,7 +119,7 @@ export default async function HomePage({ params }: HomePageProps) {
               </Link>
             </div>
             <div className={styles.grid}>
-              {featured.map((listing) => (
+              {featured.map((listing, i) => (
                 <ListingCard
                   key={listing.id}
                   listing={listing}
@@ -127,6 +127,7 @@ export default async function HomePage({ params }: HomePageProps) {
                   typeLabel={getListingTypeLabel(t, listing)}
                   areaLabel={t('listing.area')}
                   sqmLabel={t('listing.sqm')}
+                  priority={i === 0}
                 />
               ))}
             </div>

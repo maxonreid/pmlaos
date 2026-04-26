@@ -9,9 +9,10 @@ interface Props {
   typeLabel: string
   areaLabel: string
   sqmLabel: string
+  priority?: boolean
 }
 
-export default function ListingCard({ listing, locale, typeLabel, areaLabel, sqmLabel }: Props) {
+export default function ListingCard({ listing, locale, typeLabel, areaLabel, sqmLabel, priority }: Props) {
   const { slug, titleEn, villageName, price, priceUnit, photos, category, transaction } = listing
   const photo = photos[0]
   const areaSqm = listing.areaSqm
@@ -30,6 +31,7 @@ export default function ListingCard({ listing, locale, typeLabel, areaLabel, sqm
           alt={titleEn}
           fill
           unoptimized
+          priority={priority}
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
           style={{ objectFit: 'cover' }}
         />
