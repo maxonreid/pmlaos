@@ -1,12 +1,11 @@
 // Advanced Service Worker for PWA
-const VERSION = 'v2.1.0';
+const VERSION = 'v2.2.0';
 const CACHE_STATIC = `pmlaos-static-${VERSION}`;
 const CACHE_DYNAMIC = `pmlaos-dynamic-${VERSION}`;
 const CACHE_IMAGES = `pmlaos-images-${VERSION}`;
 const CACHE_API = `pmlaos-api-${VERSION}`;
 
 const STATIC_ASSETS = [
-  '/',
   '/manifest.json',
   '/icon-192x192.png',
   '/icon-512x512.png',
