@@ -336,7 +336,7 @@ export default async function ListingsPage({
                   placeholder={t('listings.searchPlaceholder')}
                   className={styles.searchInput}
                 />
-                <button type="submit" className={styles.searchButton}>
+                <button type="submit" className={styles.searchButton} suppressHydrationWarning>
                   {t('listings.searchButton')}
                 </button>
                 {query ? (
