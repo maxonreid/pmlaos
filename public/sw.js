@@ -138,8 +138,11 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // Images - Cache first, network fallback
+  // Images - Cache first, network fallback (same-origin only)
   if (request.destination === 'image') {
+    if (url.origin !== self.location.origin) {
+      return;
+    }
     event.respondWith(
       caches.match(request)
         .then((cached) => {

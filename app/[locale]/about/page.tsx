@@ -64,21 +64,30 @@ export default async function AboutPage({
         </div>
       </section>
 
-      {/* Team */}
+      {/* Team Members - Our photos */}
       <section className={styles.section}>
         <div className={styles.container}>
           <h2 className={styles.sectionTitle}>{t('teamMeetTitle')}</h2>
           <div className={styles.teamGrid}>
+
             {team.map(({ name, role, photo, bio }) => (
               <div key={name} className={styles.teamCard}>
                 <div className={styles.teamPhoto}>
-                  <Image src={photo} alt={name} fill style={{ objectFit: 'cover' }} />
+                  
+                  <Image 
+                    src={photo} 
+                    alt={name} 
+                    fill 
+                    sizes="(max-width: 768px) 100vw, 50vw" 
+                    style={{ objectFit: 'cover' }} />
+                    
                 </div>
                 <h3 className={styles.teamName}>{name}</h3>
                 <p className={styles.teamRole}>{role}</p>
                 <p className={styles.teamBio}>{bio}</p>
               </div>
             ))}
+
           </div>
         </div>
       </section>

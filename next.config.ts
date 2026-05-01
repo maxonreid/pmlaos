@@ -47,7 +47,7 @@ const nextConfig: NextConfig = {
               "style-src 'self' 'unsafe-inline'",
               "img-src 'self' data: blob: https: https://tile.openstreetmap.org",
               "font-src 'self' data:",
-              "connect-src 'self' https://pmlaos.com https://www.pmlaos.com https://tile.openstreetmap.org https://*.neon.tech https://cloud.umami.is https://api-gateway.umami.dev",
+              "connect-src 'self' https://pmlaos.com https://www.pmlaos.com https://tile.openstreetmap.org https://*.neon.tech https://cloud.umami.is https://api-gateway.umami.dev https://res.cloudinary.com",
               "frame-src 'self'",
               "worker-src 'self' blob:",
             ].join('; '),

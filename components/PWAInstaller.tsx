@@ -12,7 +12,6 @@ export default function PWAInstaller() {
   const pathname = usePathname()
   const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null)
   const [showInstallButton, setShowInstallButton] = useState(false)
-  const [showUpdateBanner, setShowUpdateBanner] = useState(false)
   const [isOnline, setIsOnline] = useState(true)
 
   const isAdminPage = pathname?.startsWith('/admin')
@@ -24,30 +23,6 @@ export default function PWAInstaller() {
         .register('/sw.js')
         .then((registration) => {
           console.log('[PWA] Service Worker registered:', registration.scope)
-
-          // Check for updates every hour
-          setInterval(() => {
-            registration.update()
-          }, 60 * 60 * 1000)
-
-          // Listen for updates
-          registration.addEventListener('updatefound', () => {
-            const newWorker = registration.installing
-            if (newWorker) {
-              newWorker.addEventListener('statechange', () => {
-                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                  setShowUpdateBanner(true)
-                }
-              })
-            }
-          })
-
-          // Listen for messages from SW
-          navigator.serviceWorker.addEventListener('message', (event) => {
-            if (event.data.type === 'SW_UPDATED') {
-              setShowUpdateBanner(true)
-            }
-          })
         })
         .catch((error) => {
           console.error('[PWA] Service Worker registration failed:', error)
@@ -104,21 +79,6 @@ export default function PWAInstaller() {
     setShowInstallButton(false)
   }
 
-  const handleUpdateClick = () => {
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.getRegistration().then((registration) => {
-        if (registration?.waiting) {
-          registration.waiting.postMessage({ type: 'SKIP_WAITING' })
-          window.location.reload()
-        }
-      })
-    }
-  }
-
-  const handleDismissUpdate = () => {
-    setShowUpdateBanner(false)
-  }
-
   return (
     <>
       {/* Offline indicator */}
@@ -139,67 +99,6 @@ export default function PWAInstaller() {
           }}
         >
           📡 You&apos;re offline - Changes will sync when connected
-        </div>
-      )}
-
-      {/* Update banner */}
-      {showUpdateBanner && (
-        <div
-          style={{
-            position: 'fixed',
-            bottom: 20,
-            left: 20,
-            right: 20,
-            background: '#1f2937',
-            color: 'white',
-            padding: '16px 20px',
-            borderRadius: '12px',
-            boxShadow: '0 10px 40px rgba(0, 0, 0, 0.3)',
-            zIndex: 9999,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            flexWrap: 'wrap',
-            gap: '12px',
-          }}
-        >
-          <div style={{ flex: 1, minWidth: '200px' }}>
-            <div style={{ fontWeight: 600, marginBottom: '4px' }}>✨ New version available!</div>
-            <div style={{ fontSize: '14px', opacity: 0.9 }}>
-              Update now to get the latest features
-            </div>
-          </div>
-          <div style={{ display: 'flex', gap: '8px' }}>
-            <button
-              onClick={handleDismissUpdate}
-              style={{
-                background: 'transparent',
-                border: '1px solid rgba(255,255,255,0.3)',
-                color: 'white',
-                padding: '8px 16px',
-                borderRadius: '6px',
-                cursor: 'pointer',
-                fontSize: '14px',
-              }}
-            >
-              Later
-            </button>
-            <button
-              onClick={handleUpdateClick}
-              style={{
-                background: 'white',
-                border: 'none',
-                color: '#1f2937',
-                padding: '8px 16px',
-                borderRadius: '6px',
-                cursor: 'pointer',
-                fontWeight: 600,
-                fontSize: '14px',
-              }}
-            >
-              Update Now
-            </button>
-          </div>
         </div>
       )}
 
